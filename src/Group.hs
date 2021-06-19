@@ -1,7 +1,13 @@
 
 {-# LANGUAGE NumericUnderscores #-}
 {-# LANGUAGE OverloadedStrings #-}
-module Group (module Group) where
+{-# LANGUAGE KindSignatures #-}
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE DerivingStrategies #-}
+
+module Group (module Group, Proxy(..)) where
 
 -- import Crypto.Number.Basic
 import Crypto.Number.ModArithmetic
@@ -9,6 +15,7 @@ import Crypto.Number.ModArithmetic
 import Formatting
 import qualified Data.Text.Lazy as TL
 import Data.Text.Lazy (Text)
+import Data.Proxy (Proxy(..))
 
 -- 𝑞 = 2^256 − 189
 q :: Integer
@@ -41,7 +48,103 @@ gCalc = expFast 2 r' p
 -- g' = 1/g mod p
 g' :: Integer
 g' = 0x7C3760F7_C5286704_4BCDE2D4_759615F1_69B873FC_B465D96D_BE3CBFA5_8AA5EA94_31FE08F7_AAC4F859_8C240BE6_194B03E3_7F8A9DC7_8A255A82_BCE95959_FF52A6DE_66CF240A_50EDB093_4A987FD9_DA4AFD73_A38011BD_08F4AE43_573BDD50_FA6F70EE_EA067D6E_57D446DE_9351BEE5_0E6AD9A5_B9282967_F1CDA890_A21C79C4_3C398755_9F415CCC_4E9E71C2_E0D7E4AA_95C23510_891F0C98_0D2F67DD_14EF589A_356D9FE7_79AD2288_5923FAAC_1D334EDC_D64D1541_66446A96_879EEB61_D92ADB68_F7BFA1BA_F7F66B05_7409A10A_08297B79_31CDB706_21571E31_43335ED7_BF130C08_18A8F99D_60E71645_D399B793_11A28B7D_10D7F1D4_0918A836_1B937929_FB0E9B46_3F90E494_4E37EDBE_60F5F0BD_21F4737D_D526B4FF_7EFE36EE_5C8A0456_3B8F04CF_8E7A29EE_9742DA6E_27B7442C_5E9BD207_3F6274ED_FDD8CBEF_916F6433_19D8A385_D5D52587_25FC3FA8_ECCFE897_72C85A84_79754B8A_53A7F19E_EB64A1BE_23A767D2_898F9152_91D680BC_8778462E_2A6490EC_E23A5C99_F96F1677_3018050C_24D00A1C_720B05AC_6B74BDE8_1FDAF645_433A227E_75D13073_00DB62FA_259B711D_077923C1_23624482_C6CEEF6A_925FABA1_8E44A5C0_C02DF980_220B517B_C210655A_FD9A7C16_2A3FCFCE_FC12E7C9_1D625397_366B3570_596316E1_6DD24A1E_1DC330C0_F051A9C4_2E528E56_39750808_BEC8614C_CA123F27_A76F043A_2FD7864E_C61C4F66_3F896543_4A73E978
+g'Calc :: Integer
 g'Calc = inverseCoprimes g p
+
+data ParamName = P | Q
+
+newtype ElementMod (n :: ParamName) = ElementMod Integer
+  deriving stock (Show, Eq)
+
+instance Parameter p => Num (ElementMod p) where
+  ElementMod a + ElementMod b = elementMod (a+b)
+  ElementMod a * ElementMod b = elementMod (a*b)
+  ElementMod a - ElementMod b = elementMod (a-b)
+  fromInteger = elementMod
+  negate (ElementMod n) = elementMod (negate n)
+  abs n = n -- Assumed to always be non-negative
+  signum (ElementMod n) = ElementMod (signum n)
+
+class Parameter (a :: ParamName) where param' :: p a -> Integer
+
+instance Parameter 'P where param' _ = p
+instance Parameter 'Q where param' _ = q
+
+type ElementModQ = ElementMod 'Q
+type ElementModP = ElementMod 'P
+
+{-# INLINE elementMod #-}
+{-# LANGUAGE DerivingStrategies #-}
+{-# LANGUAGE DerivingStrategies #-}
+elementMod :: forall a. Parameter a => Integer -> ElementMod a
+elementMod n = ElementMod (n `mod` param' @a Proxy)
+
+zeroModQ :: ElementModQ
+zeroModQ = elementMod 0
+oneModQ  :: ElementModQ
+oneModQ  = elementMod 1
+twoModQ  :: ElementModQ
+twoModQ  = elementMod 2
+
+class AsInteger a where
+  asInteger :: a -> Integer
+
+instance AsInteger (ElementMod p) where
+  {-# INLINE asInteger #-}
+  asInteger (ElementMod i) = i
+
+instance AsInteger Integer where
+  {-# INLINE asInteger #-}
+  asInteger i = i
+
+data ElementModPOrQ
+  = POrQ'P ElementModP
+  | POrQ'Q ElementModQ
+
+instance AsInteger ElementModPOrQ where
+  {-# INLINE asInteger #-}
+  asInteger (POrQ'P (ElementMod i)) = i
+  asInteger (POrQ'Q (ElementMod i)) = i
+
+data ElementModPOrQOrInt
+  = POrQOrInt'P ElementModP
+  | POrQOrInt'Q ElementModQ
+  | POrQOrInt'Int Int
+
+instance AsInteger ElementModPOrQOrInt where
+  {-# INLINE asInteger #-}
+  asInteger (POrQOrInt'P (ElementMod i)) = i
+  asInteger (POrQOrInt'Q (ElementMod i)) = i
+  asInteger (POrQOrInt'Int           i)  = toInteger i
+
+data ElementModQOrInt
+  = QOrInt'Q ElementModQ
+  | QOrInt'Int Int
+
+instance AsInteger ElementModQOrInt where
+  {-# INLINE asInteger #-}
+  asInteger (QOrInt'Q (ElementMod i)) = i
+  asInteger (QOrInt'Int           i)  = toInteger i
+
+
+data ElementModPOrInt
+  = POrInt'P ElementModP
+  | POrInt'Int Int
+
+instance AsInteger ElementModPOrInt where
+  {-# INLINE asInteger #-}
+  asInteger (POrInt'P (ElementMod i)) = i
+  asInteger (POrInt'Int           i)  = toInteger i
+
+
+powMod :: forall a b p. (AsInteger a, AsInteger b, Parameter p) => a -> b -> ElementMod p
+powMod a b = ElementMod (expSafe (asInteger a) (asInteger b) (param' @p Proxy))
+
+gPowP :: ElementModPOrQ -> ElementModP
+gPowP = powMod (ElementMod @'P g)
+
+mult :: forall p a t. (Parameter p, Foldable t, AsInteger a) => t a -> ElementMod p
+mult = ElementMod . foldl (\prod a -> (prod * asInteger a) `mod` param' @p Proxy) 1
 
 
 asHex :: Integer -> Text
