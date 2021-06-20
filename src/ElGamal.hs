@@ -10,9 +10,10 @@ import Group
       zeroModQ,
       powMod,
       gPowP,
-      mult )
+      mult, multInv )
 import Data.Foldable (toList)
 import Data.List (foldl')
+import DLog (dlog)
 
 type ElGamalSecretKey = ElementModQ
 type ElGamalPublicKey = ElementModP
@@ -25,7 +26,7 @@ data ElGamalKeyPair = ElGamalKeyPair
 data ElGamalCiphertext = ElGamalCiphertext
   { pad :: {-#UNPACK#-}!ElementModP
   , dat :: {-#UNPACK#-}!ElementModP
-  }
+  } deriving stock (Show, Eq)
 
 keypairFromSecret :: ElementModQ -> Maybe ElGamalKeyPair
 keypairFromSecret a@(ElementMod n)
@@ -54,7 +55,10 @@ add cs = case toList cs of
       (mult [dat result, dat next])
 
 decrypt :: ElGamalSecretKey -> ElGamalCiphertext -> Int
-decrypt sec enc = 0
+decrypt sec enc = decryptKnownProduct enc (powMod (pad enc) sec)
 
-decrypt_known_product :: ElGamalCiphertext -> ElementModP -> Int
-decrypt_known_product enc prod = 0
+decryptKnownProduct :: ElGamalCiphertext -> ElementModP -> Int
+decryptKnownProduct enc prod = dlog (mult [dat enc, multInv prod])
+
+partialDecrypt :: ElGamalSecretKey -> ElGamalCiphertext -> ElementModP
+partialDecrypt sec enc = powMod (pad enc) sec
