@@ -33,11 +33,10 @@ main = defaultMain $ testGroup "ElectionGuard"
          Just encrypted = encrypt cleartext nonce $ publicKey keyPair
       decrypt (secretKey keyPair) encrypted == cleartext @? "decrypt . encrypt == id"
   , testProperty "ElGamal" $
-      let
-        Just keyPair = keypairFromSecret (ElementMod $ 2^(255::Int) - 19)
-      in forAll arbitrary $ \(cleartext, nonce) ->
-          cleartext >= 0 && nonce > 0 ==>
-          let Just encrypted = encrypt cleartext (elementMod (toInteger @Int nonce)) $ publicKey keyPair
+      forAll arbitrary $ \(cleartext, nonce, privKey) ->
+          cleartext >= 0 && nonce > 0 && privKey > 1 ==>
+          let Just keyPair = keypairFromSecret (elementMod privKey)
+              Just encrypted = encrypt cleartext (elementMod (toInteger @Int nonce)) $ publicKey keyPair
           in decrypt (secretKey keyPair) encrypted == cleartext
 
   ]
