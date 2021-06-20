@@ -25,6 +25,7 @@ common common-options
                     ,  formatting
                     ,  text
                     ,  bytestring
+                    ,  MemoTrie
 
   ghc-options:         -Wall
                        -Wcompat
@@ -56,6 +57,7 @@ library
                     ,  Auxiliary
                     ,  ElGamal
                     ,  ElectionGuard
+                    ,  DLog
 
 executable ElectionGuard
   import:              common-options
