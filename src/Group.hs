@@ -157,8 +157,9 @@ powMod a b = ElementMod (expSafe (asInteger a) (asInteger b) (param' @p Proxy))
 gPowP :: ElementModPOrQ -> ElementModP
 gPowP = powMod (ElementMod @'P g)
 
-mult :: forall p a t. (Parameter p, Foldable t, AsInteger a) => t a -> ElementMod p
-mult = ElementMod . foldl (\prod a -> (prod * asInteger a) `mod` param' @p Proxy) 1
+{-# INLINE mult #-}
+mult :: forall p a b. (Parameter p, AsInteger a, AsInteger b) => a -> b -> ElementMod p
+mult a b = ElementMod ((asInteger a * asInteger b) `mod` param' @p Proxy)
 
 multInv :: forall a p. (AsInteger a, Parameter p) => a -> ElementMod p
 multInv e = ElementMod $ inverseCoprimes (asInteger e) (param' @p Proxy)

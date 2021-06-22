@@ -9,7 +9,7 @@ data LogCache = LogCache
 
 logCache :: LogCache
 logCache = LogCache (ElementMod 1) 0 (go logCache) where
-  go (LogCache g0 n xs) = let n' = n+1 in LogCache (mult [g0,ElementMod g]) n' (go xs)
+  go (LogCache g0 n xs) = let n' = n+1 in LogCache (mult g0 (ElementMod g)) n' (go xs)
 
 takeLog :: Int -> LogCache -> [(ElementModP,Int)]
 takeLog = go where
