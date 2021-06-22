@@ -26,6 +26,8 @@ common common-options
                     ,  text
                     ,  bytestring
                     ,  MemoTrie
+                    ,  aeson
+                    ,  json-alt
 
   ghc-options:         -Wall
                        -Wcompat

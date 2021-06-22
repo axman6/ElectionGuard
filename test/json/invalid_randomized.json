@@ -1,0 +1,1969 @@
+{
+  "parameters": {
+    "date": "cupidatat veniam",
+    "location": "et veniam",
+    "ballotCodingFile": {
+      "ballotStyles": [
+        {
+          "districts": [
+            "Lorem",
+            "sit",
+            "aliquip"
+          ],
+          "id": "nostrud minim adipisicing consequat",
+          "precincts": [
+            "voluptate et pariatur consectetur occaecat",
+            "fugiat"
+          ]
+        },
+        {
+          "districts": [
+            "ex id dolore qui",
+            "laborum sed Excepteur",
+            "Excepteur in",
+            "laborum tempor commodo ad",
+            "elit"
+          ],
+          "id": "anim laborum cupidatat",
+          "precincts": [
+            "et dolore dolore",
+            "culpa labore officia"
+          ]
+        }
+      ],
+      "contests": [
+        {
+          "description": "officia adipisicing ipsum",
+          "districtId": "deserun",
+          "id": "quis",
+          "section": "est exercitation",
+          "shortTitle": "officia laborum eni",
+          "title": "ullamco aliquip deserunt ut Excepteur",
+          "type": "yesno"
+        }
+      ],
+      "county": {
+        "id": "a",
+        "name": "dolor enim amet irure id"
+      },
+      "date": "dolore",
+      "districts": [
+        {
+          "id": "cupidatat consectetur in proident",
+          "name": "tempor ut qui nostrud"
+        }
+      ],
+      "parties": [
+        {
+          "abbrev": "ex dolore voluptate",
+          "id": "laborum commodo",
+          "name": "voluptate cupidatat"
+        },
+        {
+          "abbrev": "ea",
+          "id": "deserunt nisi",
+          "name": "laboris in dolor aliquip culpa"
+        },
+        {
+          "abbrev": "sint anim magna aute",
+          "id": "elit sunt ullamco ipsum officia",
+          "name": "nisi cillum"
+        },
+        {
+          "abbrev": "et aute",
+          "id": "irure officia",
+          "name": "proident"
+        }
+      ],
+      "precincts": [
+        {
+          "id": "dolore nisi ad est",
+          "name": "fugiat"
+        },
+        {
+          "id": "occaecat ",
+          "name": "pariatur"
+        },
+        {
+          "id": "",
+          "name": "ex nisi cupidatat"
+        },
+        {
+          "id": "culpa nulla",
+          "name": "nulla labore eiusmod"
+        }
+      ],
+      "state": "qui dolore eu",
+      "title": "ex pariatur veniam laborum"
+    },
+    "prime": 68986643,
+    "generator": 47606786,
+    "num_trustees": 58426229,
+    "threshold": 48916196
+  },
+  "base_hash": "4",
+  "trustee_public_keys": [
+    [
+      {
+        "public_key": 86152162,
+        "proof": {
+          "commitment": 52805652,
+          "challenge": 3564681,
+          "response": 56145127
+        }
+      }
+    ],
+    [
+      {
+        "public_key": 89498755,
+        "proof": {
+          "commitment": 59761147,
+          "challenge": 47535088,
+          "response": 99264034
+        }
+      }
+    ],
+    [
+      {
+        "public_key": 10007199,
+        "proof": {
+          "commitment": 60717743,
+          "challenge": 80638333,
+          "response": 17607901
+        }
+      },
+      {
+        "public_key": 65715626,
+        "proof": {
+          "commitment": 42209502,
+          "challenge": 22790218,
+          "response": 24627992
+        }
+      },
+      {
+        "public_key": 4571504,
+        "proof": {
+          "commitment": 71404595,
+          "challenge": 85263042,
+          "response": 85896719
+        }
+      }
+    ]
+  ],
+  "joint_public_key": 78719580,
+  "extended_base_hash": "3e1",
+  "cast_ballots": [
+    {
+      "contests": [
+        {
+          "selections": [
+            {
+              "message": {
+                "public_key": 19024675,
+                "ciphertext": 4632698
+              },
+              "zero_proof": {
+                "commitment": {
+                  "public_key": 49084627,
+                  "ciphertext": 24957193
+                },
+                "challenge": 68062307,
+                "response": 11424544
+              },
+              "one_proof": {
+                "commitment": {
+                  "public_key": 76669914,
+                  "ciphertext": 42534555
+                },
+                "challenge": 34557058,
+                "response": 16886837
+              }
+            },
+            {
+              "message": {
+                "public_key": 51406509,
+                "ciphertext": 2389507
+              },
+              "zero_proof": {
+                "commitment": {
+                  "public_key": 73408056,
+                  "ciphertext": 26202241
+                },
+                "challenge": 44272025,
+                "response": 22228033
+              },
+              "one_proof": {
+                "commitment": {
+                  "public_key": 2986944,
+                  "ciphertext": 2371556
+                },
+                "challenge": 55119635,
+                "response": 72636388
+              }
+            }
+          ],
+          "max_selections": 87322137,
+          "num_selections_proof": {
+            "commitment": {
+              "public_key": 94554048,
+              "ciphertext": 93798528
+            },
+            "challenge": 26524489,
+            "response": 97513733
+          }
+        }
+      ],
+      "ballot_info": {
+        "device_info": "non ad minim",
+        "date": "irure in",
+        "time": "dolore nostrud",
+        "tracker": "Lorem dolor in"
+      }
+    },
+    {
+      "contests": [
+        {
+          "selections": [
+            {
+              "message": {
+                "public_key": 65243536,
+                "ciphertext": 84956733
+              },
+              "zero_proof": {
+                "commitment": {
+                  "public_key": 35821927,
+                  "ciphertext": 67921491
+                },
+                "challenge": 16509423,
+                "response": 73704923
+              },
+              "one_proof": {
+                "commitment": {
+                  "public_key": 16805871,
+                  "ciphertext": 35778061
+                },
+                "challenge": 58218620,
+                "response": 90742432
+              }
+            }
+          ],
+          "max_selections": 52869437,
+          "num_selections_proof": {
+            "commitment": {
+              "public_key": 79893859,
+              "ciphertext": 93022475
+            },
+            "challenge": 77958735,
+            "response": 43779517
+          }
+        },
+        {
+          "selections": [
+            {
+              "message": {
+                "public_key": 7912909,
+                "ciphertext": 13887419
+              },
+              "zero_proof": {
+                "commitment": {
+                  "public_key": 16018494,
+                  "ciphertext": 3977865
+                },
+                "challenge": 41251196,
+                "response": 33705074
+              },
+              "one_proof": {
+                "commitment": {
+                  "public_key": 13012180,
+                  "ciphertext": 13182579
+                },
+                "challenge": 78274309,
+                "response": 11910016
+              }
+            },
+            {
+              "message": {
+                "public_key": 38253566,
+                "ciphertext": 6081529
+              },
+              "zero_proof": {
+                "commitment": {
+                  "public_key": 4904276,
+                  "ciphertext": 27261390
+                },
+                "challenge": 56175027,
+                "response": 73072767
+              },
+              "one_proof": {
+                "commitment": {
+                  "public_key": 13219593,
+                  "ciphertext": 83194969
+                },
+                "challenge": 75148408,
+                "response": 36622064
+              }
+            },
+            {
+              "message": {
+                "public_key": 94067100,
+                "ciphertext": 57183923
+              },
+              "zero_proof": {
+                "commitment": {
+                  "public_key": 69980665,
+                  "ciphertext": 26789033
+                },
+                "challenge": 42706649,
+                "response": 54467565
+              },
+              "one_proof": {
+                "commitment": {
+                  "public_key": 60175521,
+                  "ciphertext": 72895643
+                },
+                "challenge": 82803789,
+                "response": 34554061
+              }
+            },
+            {
+              "message": {
+                "public_key": 66604598,
+                "ciphertext": 47592938
+              },
+              "zero_proof": {
+                "commitment": {
+                  "public_key": 13822943,
+                  "ciphertext": 83712293
+                },
+                "challenge": 39963234,
+                "response": 42170101
+              },
+              "one_proof": {
+                "commitment": {
+                  "public_key": 17332795,
+                  "ciphertext": 88429764
+                },
+                "challenge": 40395821,
+                "response": 13914337
+              }
+            },
+            {
+              "message": {
+                "public_key": 20102568,
+                "ciphertext": 97504705
+              },
+              "zero_proof": {
+                "commitment": {
+                  "public_key": 2014876,
+                  "ciphertext": 57883270
+                },
+                "challenge": 34804159,
+                "response": 7068457
+              },
+              "one_proof": {
+                "commitment": {
+                  "public_key": 93284703,
+                  "ciphertext": 39363438
+                },
+                "challenge": 30801087,
+                "response": 26941884
+              }
+            }
+          ],
+          "max_selections": 11408792,
+          "num_selections_proof": {
+            "commitment": {
+              "public_key": 97249505,
+              "ciphertext": 12246817
+            },
+            "challenge": 75890447,
+            "response": 94927920
+          }
+        },
+        {
+          "selections": [
+            {
+              "message": {
+                "public_key": 39920359,
+                "ciphertext": 84061021
+              },
+              "zero_proof": {
+                "commitment": {
+                  "public_key": 9303307,
+                  "ciphertext": 77087047
+                },
+                "challenge": 18642250,
+                "response": 72868924
+              },
+              "one_proof": {
+                "commitment": {
+                  "public_key": 76732422,
+                  "ciphertext": 65181659
+                },
+                "challenge": 21067116,
+                "response": 45445301
+              }
+            },
+            {
+              "message": {
+                "public_key": 95128390,
+                "ciphertext": 46138730
+              },
+              "zero_proof": {
+                "commitment": {
+                  "public_key": 54005865,
+                  "ciphertext": 7393911
+                },
+                "challenge": 41456145,
+                "response": 55940968
+              },
+              "one_proof": {
+                "commitment": {
+                  "public_key": 1167802,
+                  "ciphertext": 5560101
+                },
+                "challenge": 50881519,
+                "response": 36558260
+              }
+            },
+            {
+              "message": {
+                "public_key": 35546394,
+                "ciphertext": 74831094
+              },
+              "zero_proof": {
+                "commitment": {
+                  "public_key": 70912081,
+                  "ciphertext": 65867482
+                },
+                "challenge": 34799295,
+                "response": 48508206
+              },
+              "one_proof": {
+                "commitment": {
+                  "public_key": 63428823,
+                  "ciphertext": 99080857
+                },
+                "challenge": 27099347,
+                "response": 22148603
+              }
+            }
+          ],
+          "max_selections": 93197094,
+          "num_selections_proof": {
+            "commitment": {
+              "public_key": 98714208,
+              "ciphertext": 68169202
+            },
+            "challenge": 41029549,
+            "response": 60601652
+          }
+        }
+      ],
+      "ballot_info": {
+        "device_info": "irure aliqua culpa",
+        "date": "sit in dolor in",
+        "time": "ex",
+        "tracker": "incididun"
+      }
+    },
+    {
+      "contests": [
+        {
+          "selections": [
+            {
+              "message": {
+                "public_key": 72292821,
+                "ciphertext": 25354207
+              },
+              "zero_proof": {
+                "commitment": {
+                  "public_key": 34810359,
+                  "ciphertext": 18440382
+                },
+                "challenge": 57565635,
+                "response": 33680163
+              },
+              "one_proof": {
+                "commitment": {
+                  "public_key": 31231795,
+                  "ciphertext": 52090032
+                },
+                "challenge": 54504010,
+                "response": 49078555
+              }
+            },
+            {
+              "message": {
+                "public_key": 42659694,
+                "ciphertext": 40454280
+              },
+              "zero_proof": {
+                "commitment": {
+                  "public_key": 63742532,
+                  "ciphertext": 8361970
+                },
+                "challenge": 72535608,
+                "response": 76668285
+              },
+              "one_proof": {
+                "commitment": {
+                  "public_key": 24492816,
+                  "ciphertext": 22472781
+                },
+                "challenge": 58054838,
+                "response": 94729713
+              }
+            },
+            {
+              "message": {
+                "public_key": 84451251,
+                "ciphertext": 48713003
+              },
+              "zero_proof": {
+                "commitment": {
+                  "public_key": 15878821,
+                  "ciphertext": 53255443
+                },
+                "challenge": 43646128,
+                "response": 46316873
+              },
+              "one_proof": {
+                "commitment": {
+                  "public_key": 12430363,
+                  "ciphertext": 68792764
+                },
+                "challenge": 79884025,
+                "response": 63838477
+              }
+            },
+            {
+              "message": {
+                "public_key": 84247468,
+                "ciphertext": 81274790
+              },
+              "zero_proof": {
+                "commitment": {
+                  "public_key": 10822529,
+                  "ciphertext": 53298721
+                },
+                "challenge": 37844289,
+                "response": 97408372
+              },
+              "one_proof": {
+                "commitment": {
+                  "public_key": 85618576,
+                  "ciphertext": 23555000
+                },
+                "challenge": 26669037,
+                "response": 53201490
+              }
+            }
+          ],
+          "max_selections": 31156872,
+          "num_selections_proof": {
+            "commitment": {
+              "public_key": 22088845,
+              "ciphertext": 27912085
+            },
+            "challenge": 84913094,
+            "response": 24679245
+          }
+        },
+        {
+          "selections": [
+            {
+              "message": {
+                "public_key": 44322378,
+                "ciphertext": 51064299
+              },
+              "zero_proof": {
+                "commitment": {
+                  "public_key": 57112990,
+                  "ciphertext": 60017639
+                },
+                "challenge": 13697191,
+                "response": 76759481
+              },
+              "one_proof": {
+                "commitment": {
+                  "public_key": 15743404,
+                  "ciphertext": 8858964
+                },
+                "challenge": 27099846,
+                "response": 13140805
+              }
+            },
+            {
+              "message": {
+                "public_key": 45736694,
+                "ciphertext": 87620679
+              },
+              "zero_proof": {
+                "commitment": {
+                  "public_key": 34730345,
+                  "ciphertext": 36008421
+                },
+                "challenge": 26343067,
+                "response": 40556464
+              },
+              "one_proof": {
+                "commitment": {
+                  "public_key": 47766442,
+                  "ciphertext": 73225603
+                },
+                "challenge": 14846807,
+                "response": 65502637
+              }
+            },
+            {
+              "message": {
+                "public_key": 49865041,
+                "ciphertext": 44696233
+              },
+              "zero_proof": {
+                "commitment": {
+                  "public_key": 86558899,
+                  "ciphertext": 28215621
+                },
+                "challenge": 37728605,
+                "response": 64073094
+              },
+              "one_proof": {
+                "commitment": {
+                  "public_key": 42499867,
+                  "ciphertext": 98439551
+                },
+                "challenge": 64518573,
+                "response": 89333122
+              }
+            },
+            {
+              "message": {
+                "public_key": 78540725,
+                "ciphertext": 5633790
+              },
+              "zero_proof": {
+                "commitment": {
+                  "public_key": 55426933,
+                  "ciphertext": 4728365
+                },
+                "challenge": 4021445,
+                "response": 50290087
+              },
+              "one_proof": {
+                "commitment": {
+                  "public_key": 16156325,
+                  "ciphertext": 17409019
+                },
+                "challenge": 90781738,
+                "response": 17132755
+              }
+            }
+          ],
+          "max_selections": 17949108,
+          "num_selections_proof": {
+            "commitment": {
+              "public_key": 81063503,
+              "ciphertext": 78965748
+            },
+            "challenge": 73661208,
+            "response": 75798887
+          }
+        },
+        {
+          "selections": [
+            {
+              "message": {
+                "public_key": 46729884,
+                "ciphertext": 74704808
+              },
+              "zero_proof": {
+                "commitment": {
+                  "public_key": 38159862,
+                  "ciphertext": 33893982
+                },
+                "challenge": 82846349,
+                "response": 9981147
+              },
+              "one_proof": {
+                "commitment": {
+                  "public_key": 16038935,
+                  "ciphertext": 92575033
+                },
+                "challenge": 67973915,
+                "response": 60487288
+              }
+            },
+            {
+              "message": {
+                "public_key": 90012446,
+                "ciphertext": 76694329
+              },
+              "zero_proof": {
+                "commitment": {
+                  "public_key": 48067180,
+                  "ciphertext": 4322636
+                },
+                "challenge": 32933298,
+                "response": 14848200
+              },
+              "one_proof": {
+                "commitment": {
+                  "public_key": 92320062,
+                  "ciphertext": 90413951
+                },
+                "challenge": 84201640,
+                "response": 5351049
+              }
+            }
+          ],
+          "max_selections": 35499188,
+          "num_selections_proof": {
+            "commitment": {
+              "public_key": 5052048,
+              "ciphertext": 1541510
+            },
+            "challenge": 84185402,
+            "response": 84916697
+          }
+        }
+      ],
+      "ballot_info": {
+        "device_info": "sunt sit",
+        "date": "amet ex",
+        "time": "sint",
+        "tracker": "quis pariatur"
+      }
+    }
+  ],
+  "spoiled_ballots": [
+    {
+      "contests": [
+        [
+          {
+            "encrypted_message": {
+              "public_key": 52336305,
+              "ciphertext": 63597778
+            },
+            "decrypted_message": 84266575,
+            "shares": [
+              {
+                "share": 12646530,
+                "proof": {
+                  "commitment": {
+                    "public_key": 330992,
+                    "ciphertext": 25850247
+                  },
+                  "challenge": 98824492,
+                  "response": 8630728
+                }
+              },
+              {
+                "share": 39272376,
+                "proof": {
+                  "commitment": {
+                    "public_key": 47061485,
+                    "ciphertext": 19465144
+                  },
+                  "challenge": 85054505,
+                  "response": 18221073
+                }
+              }
+            ],
+            "cleartext": 1
+          }
+        ],
+        [
+          {
+            "encrypted_message": {
+              "public_key": 57239770,
+              "ciphertext": 41274721
+            },
+            "decrypted_message": 53408818,
+            "shares": [
+              {
+                "share": 18302282,
+                "proof": {
+                  "commitment": {
+                    "public_key": 54232353,
+                    "ciphertext": 81872919
+                  },
+                  "challenge": 86128297,
+                  "response": 4624013
+                }
+              },
+              {
+                "share": 35071219,
+                "proof": {
+                  "commitment": {
+                    "public_key": 73127617,
+                    "ciphertext": 25253404
+                  },
+                  "challenge": 1384544,
+                  "response": 42923177
+                }
+              },
+              {
+                "share": 64555893,
+                "proof": {
+                  "commitment": {
+                    "public_key": 15225181,
+                    "ciphertext": 24387304
+                  },
+                  "challenge": 39484618,
+                  "response": 60333008
+                }
+              }
+            ],
+            "cleartext": 1
+          },
+          {
+            "encrypted_message": {
+              "public_key": 23101758,
+              "ciphertext": 50245949
+            },
+            "decrypted_message": 28336237,
+            "shares": [
+              {
+                "share": 3352058,
+                "proof": {
+                  "commitment": {
+                    "public_key": 8238610,
+                    "ciphertext": 63640680
+                  },
+                  "challenge": 11282755,
+                  "response": 4132559
+                }
+              }
+            ],
+            "cleartext": 1
+          },
+          {
+            "encrypted_message": {
+              "public_key": 2867354,
+              "ciphertext": 54002370
+            },
+            "decrypted_message": 27981585,
+            "shares": [
+              {
+                "share": 21675925,
+                "proof": {
+                  "commitment": {
+                    "public_key": 39639856,
+                    "ciphertext": 79650014
+                  },
+                  "challenge": 85738588,
+                  "response": 39609855
+                }
+              },
+              {
+                "share": 47576074,
+                "proof": {
+                  "commitment": {
+                    "public_key": 42484533,
+                    "ciphertext": 79699316
+                  },
+                  "challenge": 19232988,
+                  "response": 59126866
+                }
+              },
+              {
+                "share": 16011009,
+                "proof": {
+                  "commitment": {
+                    "public_key": 86739492,
+                    "ciphertext": 98706151
+                  },
+                  "challenge": 97885139,
+                  "response": 60813447
+                }
+              },
+              {
+                "share": 27739039,
+                "proof": {
+                  "commitment": {
+                    "public_key": 223666,
+                    "ciphertext": 39628599
+                  },
+                  "challenge": 86992670,
+                  "response": 4390006
+                }
+              },
+              {
+                "share": 53497114,
+                "proof": {
+                  "commitment": {
+                    "public_key": 59683562,
+                    "ciphertext": 75480498
+                  },
+                  "challenge": 70015227,
+                  "response": 91123627
+                }
+              }
+            ],
+            "cleartext": 1
+          },
+          {
+            "encrypted_message": {
+              "public_key": 19150217,
+              "ciphertext": 85814279
+            },
+            "decrypted_message": 4225074,
+            "shares": [
+              {
+                "share": 21432984,
+                "proof": {
+                  "commitment": {
+                    "public_key": 57555043,
+                    "ciphertext": 90304676
+                  },
+                  "challenge": 12371910,
+                  "response": 81682376
+                }
+              }
+            ],
+            "cleartext": 0
+          }
+        ],
+        [
+          {
+            "encrypted_message": {
+              "public_key": 46363306,
+              "ciphertext": 68400446
+            },
+            "decrypted_message": 7750727,
+            "shares": [
+              {
+                "share": 2520687,
+                "proof": {
+                  "commitment": {
+                    "public_key": 24329340,
+                    "ciphertext": 94687264
+                  },
+                  "challenge": 54508315,
+                  "response": 90538558
+                }
+              },
+              {
+                "share": 36588412,
+                "proof": {
+                  "commitment": {
+                    "public_key": 21414711,
+                    "ciphertext": 21361153
+                  },
+                  "challenge": 78887388,
+                  "response": 13872828
+                }
+              },
+              {
+                "share": 9556525,
+                "proof": {
+                  "commitment": {
+                    "public_key": 5164728,
+                    "ciphertext": 48503617
+                  },
+                  "challenge": 70767238,
+                  "response": 44746141
+                }
+              }
+            ],
+            "cleartext": 0
+          },
+          {
+            "encrypted_message": {
+              "public_key": 58176155,
+              "ciphertext": 4427236
+            },
+            "decrypted_message": 72219458,
+            "shares": [
+              {
+                "share": 2212236,
+                "proof": {
+                  "commitment": {
+                    "public_key": 41292423,
+                    "ciphertext": 25315529
+                  },
+                  "challenge": 20674217,
+                  "response": 75577802
+                }
+              },
+              {
+                "share": 79620987,
+                "proof": {
+                  "commitment": {
+                    "public_key": 7180881,
+                    "ciphertext": 52013897
+                  },
+                  "challenge": 44672005,
+                  "response": 8737351
+                }
+              }
+            ],
+            "cleartext": 0
+          },
+          {
+            "encrypted_message": {
+              "public_key": 81006163,
+              "ciphertext": 92429934
+            },
+            "decrypted_message": 27031800,
+            "shares": [
+              {
+                "share": 99046520,
+                "proof": {
+                  "commitment": {
+                    "public_key": 93406149,
+                    "ciphertext": 4680741
+                  },
+                  "challenge": 82063641,
+                  "response": 44404929
+                }
+              },
+              {
+                "share": 55936603,
+                "proof": {
+                  "commitment": {
+                    "public_key": 5854338,
+                    "ciphertext": 9483258
+                  },
+                  "challenge": 7980758,
+                  "response": 71685623
+                }
+              },
+              {
+                "share": 99051948,
+                "proof": {
+                  "commitment": {
+                    "public_key": 42894221,
+                    "ciphertext": 37542090
+                  },
+                  "challenge": 5738337,
+                  "response": 39246939
+                }
+              }
+            ],
+            "cleartext": 1
+          },
+          {
+            "encrypted_message": {
+              "public_key": 92645913,
+              "ciphertext": 40483169
+            },
+            "decrypted_message": 13622018,
+            "shares": [
+              {
+                "share": 73151366,
+                "proof": {
+                  "commitment": {
+                    "public_key": 57577330,
+                    "ciphertext": 76856347
+                  },
+                  "challenge": 59903942,
+                  "response": 20526353
+                }
+              },
+              {
+                "share": 28352112,
+                "proof": {
+                  "commitment": {
+                    "public_key": 66793761,
+                    "ciphertext": 17824216
+                  },
+                  "challenge": 47630558,
+                  "response": 57455005
+                }
+              }
+            ],
+            "cleartext": 1
+          }
+        ],
+        [
+          {
+            "encrypted_message": {
+              "public_key": 69622666,
+              "ciphertext": 70294543
+            },
+            "decrypted_message": 60864867,
+            "shares": [
+              {
+                "share": 52801265,
+                "proof": {
+                  "commitment": {
+                    "public_key": 34736546,
+                    "ciphertext": 82555680
+                  },
+                  "challenge": 2075525,
+                  "response": 62762631
+                }
+              },
+              {
+                "share": 98265097,
+                "proof": {
+                  "commitment": {
+                    "public_key": 28277242,
+                    "ciphertext": 40339079
+                  },
+                  "challenge": 59430992,
+                  "response": 8367222
+                }
+              },
+              {
+                "share": 62028773,
+                "proof": {
+                  "commitment": {
+                    "public_key": 29608404,
+                    "ciphertext": 88879728
+                  },
+                  "challenge": 78880300,
+                  "response": 57664458
+                }
+              },
+              {
+                "share": 30169521,
+                "proof": {
+                  "commitment": {
+                    "public_key": 22717114,
+                    "ciphertext": 45658634
+                  },
+                  "challenge": 90157564,
+                  "response": 39299175
+                }
+              }
+            ],
+            "cleartext": 1
+          }
+        ],
+        [
+          {
+            "encrypted_message": {
+              "public_key": 44737310,
+              "ciphertext": 69286088
+            },
+            "decrypted_message": 44767097,
+            "shares": [
+              {
+                "share": 71574999,
+                "proof": {
+                  "commitment": {
+                    "public_key": 44993411,
+                    "ciphertext": 86156577
+                  },
+                  "challenge": 70086111,
+                  "response": 48983815
+                }
+              },
+              {
+                "share": 17376936,
+                "proof": {
+                  "commitment": {
+                    "public_key": 31783955,
+                    "ciphertext": 63853790
+                  },
+                  "challenge": 92191444,
+                  "response": 91857814
+                }
+              },
+              {
+                "share": 19818494,
+                "proof": {
+                  "commitment": {
+                    "public_key": 80247332,
+                    "ciphertext": 22373263
+                  },
+                  "challenge": 49197384,
+                  "response": 50075456
+                }
+              },
+              {
+                "share": 15820313,
+                "proof": {
+                  "commitment": {
+                    "public_key": 90235934,
+                    "ciphertext": 25051866
+                  },
+                  "challenge": 11185472,
+                  "response": 293416
+                }
+              }
+            ],
+            "cleartext": 0
+          },
+          {
+            "encrypted_message": {
+              "public_key": 52790975,
+              "ciphertext": 76483865
+            },
+            "decrypted_message": 18868558,
+            "shares": [
+              {
+                "share": 73064578,
+                "proof": {
+                  "commitment": {
+                    "public_key": 44043328,
+                    "ciphertext": 94461172
+                  },
+                  "challenge": 88642125,
+                  "response": 78956065
+                }
+              },
+              {
+                "share": 984315,
+                "proof": {
+                  "commitment": {
+                    "public_key": 81600675,
+                    "ciphertext": 33651916
+                  },
+                  "challenge": 4716687,
+                  "response": 61678518
+                }
+              },
+              {
+                "share": 5743329,
+                "proof": {
+                  "commitment": {
+                    "public_key": 25666330,
+                    "ciphertext": 68424189
+                  },
+                  "challenge": 60587000,
+                  "response": 13179198
+                }
+              },
+              {
+                "share": 42499723,
+                "proof": {
+                  "commitment": {
+                    "public_key": 82606148,
+                    "ciphertext": 82514872
+                  },
+                  "challenge": 79153725,
+                  "response": 45927059
+                }
+              },
+              {
+                "share": 6043872,
+                "proof": {
+                  "commitment": {
+                    "public_key": 39951580,
+                    "ciphertext": 68956145
+                  },
+                  "challenge": 42732069,
+                  "response": 79402551
+                }
+              }
+            ],
+            "cleartext": 0
+          },
+          {
+            "encrypted_message": {
+              "public_key": 72110151,
+              "ciphertext": 39110296
+            },
+            "decrypted_message": 36086228,
+            "shares": [
+              {
+                "share": 13326773,
+                "proof": {
+                  "commitment": {
+                    "public_key": 52654425,
+                    "ciphertext": 55540497
+                  },
+                  "challenge": 21074901,
+                  "response": 83071471
+                }
+              },
+              {
+                "share": 58461944,
+                "proof": {
+                  "commitment": {
+                    "public_key": 40080967,
+                    "ciphertext": 70652962
+                  },
+                  "challenge": 63494733,
+                  "response": 30557940
+                }
+              },
+              {
+                "share": 9414200,
+                "proof": {
+                  "commitment": {
+                    "public_key": 15439203,
+                    "ciphertext": 9806406
+                  },
+                  "challenge": 27156494,
+                  "response": 70308208
+                }
+              }
+            ],
+            "cleartext": 0
+          },
+          {
+            "encrypted_message": {
+              "public_key": 93745665,
+              "ciphertext": 65644230
+            },
+            "decrypted_message": 30558745,
+            "shares": [
+              {
+                "share": 19152259,
+                "proof": {
+                  "commitment": {
+                    "public_key": 54629755,
+                    "ciphertext": 49324256
+                  },
+                  "challenge": 5240866,
+                  "response": 11406862
+                }
+              },
+              {
+                "share": 77978978,
+                "proof": {
+                  "commitment": {
+                    "public_key": 65182792,
+                    "ciphertext": 83718482
+                  },
+                  "challenge": 3972680,
+                  "response": 99590182
+                }
+              },
+              {
+                "share": 40717701,
+                "proof": {
+                  "commitment": {
+                    "public_key": 65129243,
+                    "ciphertext": 61652121
+                  },
+                  "challenge": 19662219,
+                  "response": 3155611
+                }
+              },
+              {
+                "share": 30084466,
+                "proof": {
+                  "commitment": {
+                    "public_key": 94625711,
+                    "ciphertext": 41954382
+                  },
+                  "challenge": 41894760,
+                  "response": 66580651
+                }
+              }
+            ],
+            "cleartext": 0
+          }
+        ]
+      ],
+      "ballot_info": {
+        "device_info": "sunt consectetur ",
+        "date": "aliqua ut ad est sint",
+        "time": "ut anim officia",
+        "tracker": "ut quis proident exercitation dolor"
+      }
+    },
+    {
+      "contests": [
+        [
+          {
+            "encrypted_message": {
+              "public_key": 41903275,
+              "ciphertext": 50294294
+            },
+            "decrypted_message": 43918621,
+            "shares": [
+              {
+                "share": 43784478,
+                "proof": {
+                  "commitment": {
+                    "public_key": 43328845,
+                    "ciphertext": 9837781
+                  },
+                  "challenge": 24713005,
+                  "response": 49523821
+                }
+              },
+              {
+                "share": 21458117,
+                "proof": {
+                  "commitment": {
+                    "public_key": 290216,
+                    "ciphertext": 90219428
+                  },
+                  "challenge": 7613805,
+                  "response": 59227914
+                }
+              }
+            ],
+            "cleartext": 0
+          },
+          {
+            "encrypted_message": {
+              "public_key": 91772645,
+              "ciphertext": 40615977
+            },
+            "decrypted_message": 84224204,
+            "shares": [
+              {
+                "share": 38915768,
+                "proof": {
+                  "commitment": {
+                    "public_key": 98121907,
+                    "ciphertext": 46113508
+                  },
+                  "challenge": 30945853,
+                  "response": 7911270
+                }
+              },
+              {
+                "share": 40239715,
+                "proof": {
+                  "commitment": {
+                    "public_key": 79867161,
+                    "ciphertext": 79195518
+                  },
+                  "challenge": 89111929,
+                  "response": 67313452
+                }
+              },
+              {
+                "share": 14057277,
+                "proof": {
+                  "commitment": {
+                    "public_key": 23372289,
+                    "ciphertext": 94770249
+                  },
+                  "challenge": 57769447,
+                  "response": 21016240
+                }
+              },
+              {
+                "share": 84861520,
+                "proof": {
+                  "commitment": {
+                    "public_key": 48597350,
+                    "ciphertext": 86824164
+                  },
+                  "challenge": 13096278,
+                  "response": 50700114
+                }
+              },
+              {
+                "share": 96481239,
+                "proof": {
+                  "commitment": {
+                    "public_key": 84633386,
+                    "ciphertext": 63498381
+                  },
+                  "challenge": 85008092,
+                  "response": 7525972
+                }
+              }
+            ],
+            "cleartext": 0
+          },
+          {
+            "encrypted_message": {
+              "public_key": 23472916,
+              "ciphertext": 8987130
+            },
+            "decrypted_message": 25329050,
+            "shares": [
+              {
+                "share": 42937221,
+                "proof": {
+                  "commitment": {
+                    "public_key": 41504562,
+                    "ciphertext": 20749818
+                  },
+                  "challenge": 52731944,
+                  "response": 59347485
+                }
+              },
+              {
+                "share": 8243126,
+                "proof": {
+                  "commitment": {
+                    "public_key": 17943198,
+                    "ciphertext": 98049166
+                  },
+                  "challenge": 18393857,
+                  "response": 14684352
+                }
+              },
+              {
+                "share": 70006395,
+                "proof": {
+                  "commitment": {
+                    "public_key": 53739694,
+                    "ciphertext": 18586109
+                  },
+                  "challenge": 87643518,
+                  "response": 75614646
+                }
+              },
+              {
+                "share": 54797815,
+                "proof": {
+                  "commitment": {
+                    "public_key": 6583470,
+                    "ciphertext": 33951566
+                  },
+                  "challenge": 71777315,
+                  "response": 6234749
+                }
+              }
+            ],
+            "cleartext": 0
+          },
+          {
+            "encrypted_message": {
+              "public_key": 91004797,
+              "ciphertext": 49238283
+            },
+            "decrypted_message": 18858968,
+            "shares": [
+              {
+                "share": 50795182,
+                "proof": {
+                  "commitment": {
+                    "public_key": 90043115,
+                    "ciphertext": 33405233
+                  },
+                  "challenge": 85339213,
+                  "response": 79456860
+                }
+              },
+              {
+                "share": 15449083,
+                "proof": {
+                  "commitment": {
+                    "public_key": 69398244,
+                    "ciphertext": 82025000
+                  },
+                  "challenge": 70327592,
+                  "response": 9078294
+                }
+              }
+            ],
+            "cleartext": 1
+          }
+        ],
+        [
+          {
+            "encrypted_message": {
+              "public_key": 2661346,
+              "ciphertext": 21638099
+            },
+            "decrypted_message": 57430195,
+            "shares": [
+              {
+                "share": 14325750,
+                "proof": {
+                  "commitment": {
+                    "public_key": 30851709,
+                    "ciphertext": 74284126
+                  },
+                  "challenge": 41144470,
+                  "response": 50470870
+                }
+              },
+              {
+                "share": 76810709,
+                "proof": {
+                  "commitment": {
+                    "public_key": 14985396,
+                    "ciphertext": 7122502
+                  },
+                  "challenge": 51418931,
+                  "response": 57641561
+                }
+              }
+            ],
+            "cleartext": 0
+          }
+        ],
+        [
+          {
+            "encrypted_message": {
+              "public_key": 8711934,
+              "ciphertext": 55086798
+            },
+            "decrypted_message": 4143680,
+            "shares": [
+              {
+                "share": 84299466,
+                "proof": {
+                  "commitment": {
+                    "public_key": 86844377,
+                    "ciphertext": 68966706
+                  },
+                  "challenge": 48031186,
+                  "response": 59071290
+                }
+              },
+              {
+                "share": 69546802,
+                "proof": {
+                  "commitment": {
+                    "public_key": 87203202,
+                    "ciphertext": 7046759
+                  },
+                  "challenge": 17109588,
+                  "response": 36589793
+                }
+              },
+              {
+                "share": 93733860,
+                "proof": {
+                  "commitment": {
+                    "public_key": 52760560,
+                    "ciphertext": 21117355
+                  },
+                  "challenge": 66993612,
+                  "response": 41111699
+                }
+              },
+              {
+                "share": 84650522,
+                "proof": {
+                  "commitment": {
+                    "public_key": 40154818,
+                    "ciphertext": 9613167
+                  },
+                  "challenge": 14554918,
+                  "response": 58568588
+                }
+              }
+            ],
+            "cleartext": 0
+          }
+        ],
+        [
+          {
+            "encrypted_message": {
+              "public_key": 52790543,
+              "ciphertext": 2799460
+            },
+            "decrypted_message": 89371163,
+            "shares": [
+              {
+                "share": 90743488,
+                "proof": {
+                  "commitment": {
+                    "public_key": 8382622,
+                    "ciphertext": 20294414
+                  },
+                  "challenge": 57723449,
+                  "response": 46950533
+                }
+              },
+              {
+                "share": 68496287,
+                "proof": {
+                  "commitment": {
+                    "public_key": 75355101,
+                    "ciphertext": 87475522
+                  },
+                  "challenge": 66073974,
+                  "response": 30386810
+                }
+              },
+              {
+                "share": 56567518,
+                "proof": {
+                  "commitment": {
+                    "public_key": 726617,
+                    "ciphertext": 36004172
+                  },
+                  "challenge": 88382259,
+                  "response": 38356742
+                }
+              },
+              {
+                "share": 67725212,
+                "proof": {
+                  "commitment": {
+                    "public_key": 60757056,
+                    "ciphertext": 37338694
+                  },
+                  "challenge": 99777983,
+                  "response": 30691996
+                }
+              },
+              {
+                "share": 85680691,
+                "proof": {
+                  "commitment": {
+                    "public_key": 62004295,
+                    "ciphertext": 24668684
+                  },
+                  "challenge": 99450065,
+                  "response": 76547440
+                }
+              }
+            ],
+            "cleartext": 1
+          },
+          {
+            "encrypted_message": {
+              "public_key": 88109836,
+              "ciphertext": 95444044
+            },
+            "decrypted_message": 53922829,
+            "shares": [
+              {
+                "share": 14711620,
+                "proof": {
+                  "commitment": {
+                    "public_key": 86683130,
+                    "ciphertext": 60929386
+                  },
+                  "challenge": 89590043,
+                  "response": 48597950
+                }
+              },
+              {
+                "share": 63061754,
+                "proof": {
+                  "commitment": {
+                    "public_key": 85615219,
+                    "ciphertext": 432272
+                  },
+                  "challenge": 1323135,
+                  "response": 92566495
+                }
+              },
+              {
+                "share": 65806633,
+                "proof": {
+                  "commitment": {
+                    "public_key": 61051913,
+                    "ciphertext": 82919399
+                  },
+                  "challenge": 12441760,
+                  "response": 11509865
+                }
+              },
+              {
+                "share": 88690886,
+                "proof": {
+                  "commitment": {
+                    "public_key": 54244836,
+                    "ciphertext": 88598624
+                  },
+                  "challenge": 99504261,
+                  "response": 23950659
+                }
+              },
+              {
+                "share": 45214274,
+                "proof": {
+                  "commitment": {
+                    "public_key": 46661228,
+                    "ciphertext": 22353490
+                  },
+                  "challenge": 26099366,
+                  "response": 95931448
+                }
+              }
+            ],
+            "cleartext": 1
+          },
+          {
+            "encrypted_message": {
+              "public_key": 97208176,
+              "ciphertext": 41313992
+            },
+            "decrypted_message": 30355127,
+            "shares": [
+              {
+                "share": 4011297,
+                "proof": {
+                  "commitment": {
+                    "public_key": 92329533,
+                    "ciphertext": 44661415
+                  },
+                  "challenge": 64897864,
+                  "response": 74781714
+                }
+              },
+              {
+                "share": 23203436,
+                "proof": {
+                  "commitment": {
+                    "public_key": 27252277,
+                    "ciphertext": 29735822
+                  },
+                  "challenge": 69920033,
+                  "response": 41797365
+                }
+              },
+              {
+                "share": 13603953,
+                "proof": {
+                  "commitment": {
+                    "public_key": 25107505,
+                    "ciphertext": 62937889
+                  },
+                  "challenge": 88345627,
+                  "response": 57791292
+                }
+              }
+            ],
+            "cleartext": 1
+          }
+        ],
+        [
+          {
+            "encrypted_message": {
+              "public_key": 4802269,
+              "ciphertext": 68676324
+            },
+            "decrypted_message": 91462164,
+            "shares": [
+              {
+                "share": 28998727,
+                "proof": {
+                  "commitment": {
+                    "public_key": 3785759,
+                    "ciphertext": 68861504
+                  },
+                  "challenge": 75512388,
+                  "response": 49456297
+                }
+              },
+              {
+                "share": 6667635,
+                "proof": {
+                  "commitment": {
+                    "public_key": 75735060,
+                    "ciphertext": 3744121
+                  },
+                  "challenge": 32934231,
+                  "response": 23600394
+                }
+              }
+            ],
+            "cleartext": 1
+          },
+          {
+            "encrypted_message": {
+              "public_key": 86179539,
+              "ciphertext": 4411002
+            },
+            "decrypted_message": 69411089,
+            "shares": [
+              {
+                "share": 73539578,
+                "proof": {
+                  "commitment": {
+                    "public_key": 27248603,
+                    "ciphertext": 24490424
+                  },
+                  "challenge": 50035896,
+                  "response": 33505017
+                }
+              },
+              {
+                "share": 19569795,
+                "proof": {
+                  "commitment": {
+                    "public_key": 54123425,
+                    "ciphertext": 2223488
+                  },
+                  "challenge": 8731539,
+                  "response": 92340276
+                }
+              },
+              {
+                "share": 6551186,
+                "proof": {
+                  "commitment": {
+                    "public_key": 1296921,
+                    "ciphertext": 65424561
+                  },
+                  "challenge": 20088295,
+                  "response": 91130798
+                }
+              }
+            ],
+            "cleartext": 0
+          }
+        ]
+      ],
+      "ballot_info": {
+        "device_info": "id proident mollit",
+        "date": "amet dolore ut magna voluptate",
+        "time": "adipisicing pariatur",
+        "tracker": "anim"
+      }
+    }
+  ],
+  "contest_tallies": [
+    [
+      {
+        "encrypted_tally": {
+          "public_key": 24116377,
+          "ciphertext": 17975404
+        },
+        "decrypted_tally": 27352016,
+        "shares": [
+          {
+            "share": 96478949,
+            "proof": {
+              "commitment": {
+                "public_key": 96284068,
+                "ciphertext": 95692440
+              },
+              "challenge": 46105553,
+              "response": 98742343
+            }
+          },
+          {
+            "share": 90398555,
+            "proof": {
+              "commitment": {
+                "public_key": 82876627,
+                "ciphertext": 98963959
+              },
+              "challenge": 96071879,
+              "response": 49066116
+            }
+          },
+          {
+            "share": 74333820,
+            "proof": {
+              "commitment": {
+                "public_key": 29309749,
+                "ciphertext": 10998220
+              },
+              "challenge": 67302950,
+              "response": 65519100
+            }
+          }
+        ],
+        "cleartext": 98252272
+      },
+      {
+        "encrypted_tally": {
+          "public_key": 54187762,
+          "ciphertext": 45609337
+        },
+        "decrypted_tally": 56745465,
+        "shares": [
+          {
+            "share": 50847065,
+            "proof": {
+              "commitment": {
+                "public_key": 13592788,
+                "ciphertext": 34650207
+              },
+              "challenge": 9687642,
+              "response": 76528318
+            }
+          }
+        ],
+        "cleartext": 60953583
+      }
+    ]
+  ]
+}
