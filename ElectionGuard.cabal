@@ -28,6 +28,7 @@ common common-options
                     ,  MemoTrie
                     ,  aeson
                     ,  json-alt
+                    ,  memory
 
   ghc-options:         -Wall
                        -Wcompat
@@ -60,6 +61,7 @@ library
                     ,  ElGamal
                     ,  ElectionGuard
                     ,  DLog
+                    ,  Hash
 
 executable ElectionGuard
   import:              common-options
