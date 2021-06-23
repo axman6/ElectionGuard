@@ -29,6 +29,8 @@ common common-options
                     ,  aeson
                     ,  json-alt
                     ,  memory
+                    ,  base16-bytestring
+                    ,  QuickCheck
 
   ghc-options:         -Wall
                        -Wcompat
@@ -51,6 +53,9 @@ common common-options
                        TypeApplications
                        ViewPatterns
                        BangPatterns
+                       DuplicateRecordFields
+                       DerivingStrategies
+                       OverloadedStrings
 
 library
   import:              common-options
