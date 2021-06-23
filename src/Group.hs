@@ -20,6 +20,13 @@ import Data.Proxy (Proxy(..))
 
 import Data.MemoTrie
 import Data.Coerce ( coerce )
+import Data.ByteString (ByteString)
+import Data.ByteString.Base16 (encode)
+import Crypto.Number.Serialize (i2osp)
+import Data.ByteArray (Bytes)
+
+import Test.QuickCheck
+
 
 -- 𝑞 = 2^256 − 189
 q :: Integer
@@ -30,6 +37,9 @@ q = 0xFFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFF43
 -- delta = 495448529856135475846147600290107731951815687842437876083937612367400355133042233301
 p :: Integer
 p = 0xFFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_93C467E3_7DB0C7A4_D1BE3F81_0152CB56_A1CECC3A_F65CC019_0C03DF34_709AFFBD_8E4B59FA_03A9F0EE_D0649CCB_621057D1_1056AE91_32135A08_E43B4673_D74BAFEA_58DEB878_CC86D733_DBE7BF38_154B36CF_8A96D156_7899AAAE_0C09D4C8_B6B7B86F_D2A1EA1D_E62FF864_3EC7C271_82797722_5E6AC2F0_BD61C746_961542A3_CE3BEA5D_B54FE70E_63E6D09F_8FC28658_E80567A4_7CFDE60E_E741E5D8_5A7BD469_31CED822_03655949_64B83989_6FCAABCC_C9B31959_C083F22A_D3EE591C_32FAB2C7_448F2A05_7DB2DB49_EE52E018_2741E538_65F004CC_8E704B7C_5C40BF30_4C4D8C4F_13EDF604_7C555302_D2238D8C_E11DF242_4F1B66C2_C5D238D0_744DB679_AF289048_7031F9C0_AEA1C4BB_6FE9554E_E528FDF1_B05E5B25_6223B2F0_9215F371_9F9C7CCC_69DDF172_D0D62342_17FCC003_7F18B93E_F5389130_B7A661E5_C26E5421_4068BBCA_FEA32A67_818BD307_5AD1F5C7_E9CC3D17_37FB2817_1BAF84DB_B6612B78_81C1A48E_439CD03A_92BF5222_5A2B38E6_542E9F72_2BCE15A3_81B5753E_A8427633_81CCAE83_512B3051_1B32E5E8_D8036214_9AD030AA_BA5F3A57_98BB22AA_7EC1B6D0_F17903F4_E234EA60_34AA8597_3F79A93F_FB82A75C_47C03D43_D2F9CA02_D03199BA_CEDDD453_34DBC6B5_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF
+
+pMinus1 :: Integer
+pMinus1 = p - 1
 
 -- r = p-1 / q
 -- r = p-1 `div` q
@@ -69,6 +79,9 @@ instance Parameter p => Num (ElementMod p) where
   negate (ElementMod n) = elementMod (negate n)
   abs n = n -- Assumed to always be non-negative
   signum (ElementMod n) = ElementMod (signum n)
+
+instance Parameter p => Arbitrary (ElementMod p) where
+  arbitrary = ElementMod <$> chooseInteger (0,param' @p Proxy - 1)
 
 instance Parameter a => HasTrie (ElementMod a) where
   newtype (ElementMod a) :->: b = ElementModTrie (Integer :->: b)
@@ -161,8 +174,17 @@ gPowP = powMod (ElementMod @'P g)
 mult :: forall p a b. (Parameter p, AsInteger a, AsInteger b) => a -> b -> ElementMod p
 mult a b = ElementMod ((asInteger a * asInteger b) `mod` param' @p Proxy)
 
-multInv :: forall a p. (AsInteger a, Parameter p) => a -> ElementMod p
+multInv :: forall p a. (AsInteger a, Parameter p) => a -> ElementMod p
 multInv e = ElementMod $ inverseCoprimes (asInteger e) (param' @p Proxy)
+
+divP :: forall p. Parameter p => ElementMod p -> ElementMod p -> ElementMod p
+divP a b = a `mult` multInv @p b
+
+toHex :: AsInteger a => a -> ByteString
+toHex a = encode $ i2osp (asInteger a)
+
+toBytes :: AsInteger a => a -> Bytes
+toBytes = i2osp . asInteger
 
 asHex :: Integer -> String
 asHex = formatToString ("0x" % splatWith (TL.chunksOf 8) (intercalated "_") (uppercased (lpadded 1024 '0' hex)))
