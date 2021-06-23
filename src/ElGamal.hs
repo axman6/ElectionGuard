@@ -22,8 +22,8 @@ data ElGamalKeyPair = ElGamalKeyPair
   } deriving stock (Show)
 
 data ElGamalCiphertext = ElGamalCiphertext
-  { pad :: {-#UNPACK#-}!ElementModP
-  , dat :: {-#UNPACK#-}!ElementModP
+  { pubKey :: {-#UNPACK#-}!ElementModP
+  , ciphertext :: {-#UNPACK#-}!ElementModP
   } deriving stock (Show, Eq)
 
 keypairFromSecret :: ElementModQ -> Maybe ElGamalKeyPair
@@ -32,12 +32,12 @@ keypairFromSecret a@(ElementMod n)
   | otherwise = Just $ ElGamalKeyPair a (gPowP $ POrQ'Q a)
 
 encrypt :: Int -> ElementModQ -> ElementModP -> Maybe ElGamalCiphertext
-encrypt m nonce pubKey =
+encrypt m nonce pubK =
   let
-    pad = gPowP (POrQ'Q nonce)
+    pubKey = gPowP (POrQ'Q nonce)
     gpowp_m = gPowP (POrQ'Q (ElementMod (toInteger m)))
-    pubkey_pow_n = powMod pubKey nonce :: ElementModP
-    dat = mult gpowp_m pubkey_pow_n
+    pubkey_pow_n = powMod pubK nonce :: ElementModP
+    ciphertext = mult gpowp_m pubkey_pow_n
 
   in if nonce == zeroModQ
     then Nothing
@@ -45,20 +45,20 @@ encrypt m nonce pubKey =
 
 add :: ElGamalCiphertext -> ElGamalCiphertext -> ElGamalCiphertext
 add a b = ElGamalCiphertext
-  (mult (pad a) (pad b))
-  (mult (dat a) (dat b))
+  (mult (pubKey a) (pubKey b))
+  (mult (ciphertext a) (ciphertext b))
 
 neg :: ElGamalCiphertext -> ElGamalCiphertext
-neg ElGamalCiphertext{..} = ElGamalCiphertext (multInv pad) (multInv dat)
+neg ElGamalCiphertext{..} = ElGamalCiphertext (multInv pubKey) (multInv ciphertext)
 
 sub :: ElGamalCiphertext -> ElGamalCiphertext -> ElGamalCiphertext
 sub a b = add a (neg b)
 
 decrypt :: ElGamalSecretKey -> ElGamalCiphertext -> Int
-decrypt sec enc = decryptKnownProduct enc (powMod (pad enc) sec)
+decrypt sec enc = decryptKnownProduct enc (powMod (pubKey enc) sec)
 
 decryptKnownProduct :: ElGamalCiphertext -> ElementModP -> Int
-decryptKnownProduct enc prod = dlog (mult (dat enc) (multInv prod :: ElementModP))
+decryptKnownProduct enc prod = dlog (mult (ciphertext enc) (multInv prod :: ElementModP))
 
 partialDecrypt :: ElGamalSecretKey -> ElGamalCiphertext -> ElementModP
-partialDecrypt sec enc = powMod (pad enc) sec
+partialDecrypt sec enc = powMod (pubKey enc) sec
