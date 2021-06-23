@@ -8,12 +8,14 @@ import Test.Tasty.QuickCheck
 import Crypto.Number.ModArithmetic ( expFast )
 import Crypto.Number.Prime ( isProbablyPrime )
 
-import Group ( ElementMod(ElementMod), q, p, r, g, elementMod )
+import Group ( ElementMod(ElementMod), q, p, r, g, elementMod, ElementModQ )
 import ElGamal
     ( ElGamalKeyPair(publicKey, secretKey),
       keypairFromSecret,
       encrypt,
       decrypt )
+import Hash ( hash, hashDirect )
+import Data.ByteString (ByteString)
 
 main :: IO ()
 main = defaultMain $ testGroup "ElectionGuard"
@@ -33,10 +35,24 @@ main = defaultMain $ testGroup "ElectionGuard"
          Just encrypted = encrypt cleartext nonce $ publicKey keyPair
       decrypt (secretKey keyPair) encrypted == cleartext @? "decrypt . encrypt == id"
   , testProperty "ElGamal" $
-      forAll arbitrary $ \(cleartext, nonce, privKey) ->
-          cleartext >= 0 && nonce > 0 && privKey > 1 ==>
+      forAll arbitrary $ \(Positive cleartext, Positive nonce, Positive privKey) ->
+         privKey > 1 ==>
           let Just keyPair = keypairFromSecret (elementMod privKey)
               Just encrypted = encrypt cleartext (elementMod (toInteger @Int nonce)) $ publicKey keyPair
           in decrypt (secretKey keyPair) encrypted == cleartext
-
+  , testGroup "Hash"
+        [testProperty "Hash equality" $ \(a :: ElementModQ) b ->
+            if a == b
+                then hash a === hash b
+                else hash a =/= hash b
+        , testCase "numbers and strings differ" $ do
+            hash @ElementModQ 0 /= hash @ByteString "0" @? "0 /= \"0\""
+            hash @ElementModQ 1 /= hash @ByteString "1" @? "1 /= \"1\""
+            hash @ByteString "Welcome To ElectionGuard"
+                /= hash @ByteString "welcome To electionGuard"
+                @? "Strings with differing case"
+        , testCase "formats match" $ do
+            hash (1 :: ElementModQ) == hashDirect @ByteString "|01|" @? "format for ElementModQ matches"
+            hash (1::ElementModQ,2::ElementModQ) ==  hashDirect @ByteString "|01|02|" @? "Format for tuple matches"
+        ]
   ]
