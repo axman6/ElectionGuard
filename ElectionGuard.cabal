@@ -68,6 +68,8 @@ library
                     ,  DLog
                     ,  Hash
                     ,  Election
+                    ,  Proof
+                    ,  Schnorr
 
 executable ElectionGuard
   import:              common-options
