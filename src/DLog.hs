@@ -4,7 +4,7 @@ import Group ( ElementModP, ElementMod(ElementMod), g, mult )
 import Data.MemoTrie (memo)
 data LogCache = LogCache
   !ElementModP
-  !Int
+  Int
   LogCache
 
 logCache :: LogCache
