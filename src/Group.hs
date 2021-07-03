@@ -23,9 +23,8 @@ import Data.Coerce ( coerce )
 import Data.ByteString (ByteString)
 import Data.ByteString.Base16 (encode)
 import Crypto.Number.Serialize (i2osp)
-import Data.ByteArray (Bytes)
 
-import Test.QuickCheck
+import Test.QuickCheck ( chooseInteger, Arbitrary(arbitrary) )
 
 
 -- 𝑞 = 2^256 − 189
@@ -106,6 +105,13 @@ type ElementModP = ElementMod 'P
 elementMod :: forall a. Parameter a => Integer -> ElementMod a
 elementMod n = ElementMod (n `mod` param' @a Proxy)
 
+zeroModP :: ElementModP
+zeroModP = elementMod 0
+oneModP  :: ElementModP
+oneModP  = elementMod 1
+twoModP  :: ElementModP
+twoModP  = elementMod 2
+
 zeroModQ :: ElementModQ
 zeroModQ = elementMod 0
 oneModQ  :: ElementModQ
@@ -136,32 +142,32 @@ instance AsInteger ElementModPOrQ where
 data ElementModPOrQOrInt
   = POrQOrInt'P ElementModP
   | POrQOrInt'Q ElementModQ
-  | POrQOrInt'Int Int
+  | POrQOrInt'Int Integer
 
 instance AsInteger ElementModPOrQOrInt where
   {-# INLINE asInteger #-}
   asInteger (POrQOrInt'P (ElementMod i)) = i
   asInteger (POrQOrInt'Q (ElementMod i)) = i
-  asInteger (POrQOrInt'Int           i)  = toInteger i
+  asInteger (POrQOrInt'Int           i)  = i
 
 data ElementModQOrInt
   = QOrInt'Q ElementModQ
-  | QOrInt'Int Int
+  | QOrInt'Int Integer
 
 instance AsInteger ElementModQOrInt where
   {-# INLINE asInteger #-}
   asInteger (QOrInt'Q (ElementMod i)) = i
-  asInteger (QOrInt'Int           i)  = toInteger i
+  asInteger (QOrInt'Int           i)  = i
 
 
 data ElementModPOrInt
   = POrInt'P ElementModP
-  | POrInt'Int Int
+  | POrInt'Int Integer
 
 instance AsInteger ElementModPOrInt where
   {-# INLINE asInteger #-}
   asInteger (POrInt'P (ElementMod i)) = i
-  asInteger (POrInt'Int           i)  = toInteger i
+  asInteger (POrInt'Int           i)  = i
 
 
 powMod :: forall a b p. (AsInteger a, AsInteger b, Parameter p) => a -> b -> ElementMod p
@@ -180,10 +186,23 @@ multInv e = ElementMod $ inverseCoprimes (asInteger e) (param' @p Proxy)
 divP :: forall p. Parameter p => ElementMod p -> ElementMod p -> ElementMod p
 divP a b = a `mult` multInv @p b
 
+isValidResidue :: ElementMod 'P -> Bool
+isValidResidue self =
+  let residue = powMod self q == oneModP
+  in inBounds self && residue
+
+inBounds :: forall p. Parameter p => ElementMod p -> Bool
+inBounds (ElementMod self) = self >= 0 && self < param' @p Proxy
+
+-- Formatting and bytestrings
+
 toHex :: AsInteger a => a -> ByteString
 toHex a = encode $ i2osp (asInteger a)
 
-toBytes :: AsInteger a => a -> Bytes
+toHexBS :: ByteString -> ByteString
+toHexBS = encode
+
+toBytes :: AsInteger a => a -> ByteString
 toBytes = i2osp . asInteger
 
 asHex :: Integer -> String
