@@ -67,6 +67,7 @@ library
                     ,  ElectionGuard
                     ,  DLog
                     ,  Hash
+                    ,  Election
 
 executable ElectionGuard
   import:              common-options
