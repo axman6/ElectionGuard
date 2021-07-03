@@ -70,6 +70,7 @@ library
                     ,  Election
                     ,  Proof
                     ,  Schnorr
+                    ,  Nonce
 
 executable ElectionGuard
   import:              common-options
