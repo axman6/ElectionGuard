@@ -1,15 +1,16 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE OverloadedStrings #-}
 module Hash (module Hash) where
 
-import Crypto.Number.Serialize (os2ip, i2osp)
+import Crypto.Number.Serialize (os2ip)
 import Crypto.Hash
-    ( hashFinalize, hashInit, hashUpdate, hashUpdates, SHA256 (SHA256), Context, Digest, hashWith )
+    ( hashFinalize, hashInit, hashUpdate, SHA256 (SHA256), Context, Digest, hashWith )
 import Data.ByteArray ( ByteArray, convert )
 
-import Group (ElementModQ, elementMod, toHex, ElementMod, AsInteger (asInteger), ElementModP, toBytes, toHexBS, Parameter)
+import Group (ElementModQ, elementMod, toHex, ElementMod, Parameter, ElementModPOrQ, AsInteger (asInteger), ElementModPOrQOrInt, ElementModQOrInt, ElementModPOrInt)
 import Data.ByteString (ByteString)
-import Data.Foldable (toList)
+import Data.ByteString.Char8 (pack)
 
 toModQ :: ByteString -> ElementModQ
 toModQ = elementMod . os2ip
@@ -37,12 +38,12 @@ hashDirect ba = finaliseElement $ hashUpdate hashInit ba
 
 showHashTree :: HashTree -> String
 showHashTree = foldTree
-   (\bs -> init . drop 1 $ show bs)
+   (init . drop 1 . show)
    (\strs -> "(" <> foldr (\b acc -> b <> "|" <> acc) ")" strs)
 
 showPipedTree :: HashTree -> String
 showPipedTree = foldTree
-  (\bs -> init . drop 1 $ show bs)
+  (init . drop 1 . show)
   (\strs -> "|" <> foldr (\b acc -> b <> "|" <> acc) "|" strs)
 
 
@@ -74,9 +75,11 @@ foldHash = convert . hashFinalize . foldr (\bs ctx -> hashUpdate ctx (bs <> "|")
 
 hashString :: HashTree -> ByteString
 hashString (Item bs) = pipe <> bs <> pipe
-hashString (Sequence bs) = pipe <> foldr (\b rest -> hashString' b <> pipe <> rest) "" bs where
+hashString (Sequence ts) = pipe <> foldr (\b rest -> hashString' b <> pipe <> rest) "" ts where
   hashString' (Item bs) = bs
-  hashString' (Sequence cs) = "hash("<>hashString (Sequence cs)<>")"
+  hashString' (Sequence cs) =
+    "hash[" <>  toHex (hash (Sequence cs)) <> "]" <>
+    "(" <> hashString (Sequence cs) <> ")"
 
 class Hashed a where
   hashTree :: a -> HashTree
@@ -112,6 +115,17 @@ instance (Hashed a, Hashed b, Hashed c, Hashed d) => Hashed (a,b,c,d) where
 instance (Hashed a, Hashed b, Hashed c, Hashed d, Hashed e) => Hashed (a,b,c,d,e) where
   hashTree (a,b,c,d,e) = Sequence [hashTree a, hashTree b, hashTree c, hashTree d, hashTree e]
 
+instance (Hashed a, Hashed b, Hashed c, Hashed d, Hashed e, Hashed f) => Hashed (a,b,c,d,e,f) where
+  hashTree (a,b,c,d,e,f) = Sequence [hashTree a, hashTree b, hashTree c, hashTree d, hashTree e, hashTree f]
+
+instance Hashed Integer where
+  hashTree = Item . pack . show
+
+
+instance Hashed ElementModPOrQ      where hashTree = hashTree . asInteger
+instance Hashed ElementModPOrQOrInt where hashTree = hashTree . asInteger
+instance Hashed ElementModQOrInt    where hashTree = hashTree . asInteger
+instance Hashed ElementModPOrInt    where hashTree = hashTree . asInteger
 
 -- data Input p
 --   = External Integer
