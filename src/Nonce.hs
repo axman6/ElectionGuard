@@ -9,10 +9,10 @@ data Nonces = Nonces
   , headers :: [ElementModPOrQ]
   }
 
-nonces :: ElementModQ -> [ElementModPOrQ] -> Nonces
-nonces e = \case
+initNonces :: Hashed a => ElementModQ -> [a] -> Nonces
+initNonces e = \case
   [] -> Nonces{seed = e, headers = []}
-  xs -> Nonces{seed = hash (POrQ'Q e : xs), headers = xs}
+  xs -> Nonces{seed = hash (POrQ'Q e : map (POrQ'Q . hash) xs), headers = xs}
 
 nonceAt :: Nonces -> Integer -> Maybe ElementModQ
 nonceAt Nonces{..} = \case

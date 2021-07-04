@@ -21,6 +21,8 @@ initContext = hashUpdate hashInit pipe
 pipe :: ByteString
 pipe = "|"
 
+bs :: ByteString -> ByteString
+bs = id
 data HashTree
   = Item ByteString
   | Sequence [HashTree]
@@ -117,6 +119,9 @@ instance (Hashed a, Hashed b, Hashed c, Hashed d, Hashed e) => Hashed (a,b,c,d,e
 
 instance (Hashed a, Hashed b, Hashed c, Hashed d, Hashed e, Hashed f) => Hashed (a,b,c,d,e,f) where
   hashTree (a,b,c,d,e,f) = Sequence [hashTree a, hashTree b, hashTree c, hashTree d, hashTree e, hashTree f]
+
+instance (Hashed a, Hashed b, Hashed c, Hashed d, Hashed e, Hashed f, Hashed g) => Hashed (a,b,c,d,e,f,g) where
+  hashTree (a,b,c,d,e,f,g) = Sequence [hashTree a, hashTree b, hashTree c, hashTree d, hashTree e, hashTree f, hashTree g]
 
 instance Hashed Integer where
   hashTree = Item . pack . show

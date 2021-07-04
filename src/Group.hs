@@ -173,6 +173,10 @@ instance AsInteger ElementModPOrInt where
 powMod :: forall a b p. (AsInteger a, AsInteger b, Parameter p) => a -> b -> ElementMod p
 powMod a b = ElementMod (expSafe (asInteger a) (asInteger b) (param' @p Proxy))
 
+infixr 8 ^%
+(^%) :: forall a b p. (AsInteger a, AsInteger b, Parameter p) => a -> b -> ElementMod p
+(^%) = powMod
+
 gPowP :: ElementModPOrQ -> ElementModP
 gPowP = powMod (ElementMod @'P g)
 
@@ -185,6 +189,11 @@ multInv e = ElementMod $ inverseCoprimes (asInteger e) (param' @p Proxy)
 
 divP :: forall p. Parameter p => ElementMod p -> ElementMod p -> ElementMod p
 divP a b = a `mult` multInv @p b
+
+-- | Computes \( (P - n) \mod{P} \) for prime parameter \( P \)
+negateN :: forall p. Parameter p => ElementMod p -> ElementMod p
+negateN (ElementMod n) = ElementMod (param' @p Proxy - n)
+
 
 isValidResidue :: ElementMod 'P -> Bool
 isValidResidue self =
