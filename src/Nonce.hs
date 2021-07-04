@@ -1,20 +1,22 @@
 {-# LANGUAGE RecordWildCards #-}
 module Nonce (module Nonce) where
 
-import Group
-import Hash
+import Group ( ElementModPOrQ(POrQ'Q), ElementModQ )
+import Hash ( hash )
+import Data.ByteString (ByteString)
 
 data Nonces = Nonces
   { seed :: ElementModQ
-  , headers :: [ElementModPOrQ]
+  , headers :: [Either ByteString ElementModPOrQ]
   }
 
-initNonces :: Hashed a => ElementModQ -> [a] -> Nonces
+initNonces :: ElementModQ -> [Either ByteString ElementModPOrQ] -> Nonces
 initNonces e = \case
   [] -> Nonces{seed = e, headers = []}
-  xs -> Nonces{seed = hash (POrQ'Q e : map (POrQ'Q . hash) xs), headers = xs}
+  xs -> Nonces{seed = hash (Right (POrQ'Q e) : xs), headers = xs}
 
-nonceAt :: Nonces -> Integer -> Maybe ElementModQ
-nonceAt Nonces{..} = \case
-  n | n < 0 -> Nothing
-    | otherwise -> Just $ hash (seed, n, headers)
+nonceAt :: Nonces -> Integer -> ElementModQ
+nonceAt Nonces{..} n =
+  if null headers
+  then hash (seed, n)
+  else hash (seed, n, headers)

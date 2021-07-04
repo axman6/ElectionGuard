@@ -101,6 +101,11 @@ instance Hashed ByteString where
   hashTree "" = Item "null"
   hashTree e = Item e
 
+
+instance (Hashed a, Hashed b) => Hashed (Either a b) where
+  hashTree = either hashTree hashTree
+
+
 instance Hashed a => Hashed [a] where
   hashTree [] = Item "null"
   hashTree xs = Sequence $ map hashTree xs

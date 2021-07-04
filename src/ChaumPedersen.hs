@@ -16,7 +16,7 @@ import Group
       inBounds, ParamName (Q), zeroModQ, ElementMod (ElementMod), negateN )
 import Hash ( hash, bs )
 import Nonce (initNonces, nonceAt)
-import Data.Maybe (fromJust)
+import Data.Maybe ()
 
 data DisjunctiveChaumPedersenProof = DisjunctiveChaumPedersenProof
   { proofZeroPad       :: ElementModP
@@ -331,8 +331,8 @@ disjunctiveChaumPedersenZero ::
 disjunctiveChaumPedersenZero message r k qBar seed =
   let
     (alpha, beta) = (pubKey message, ciphertext message)
-    nonces = initNonces seed [bs"disjoint-chaum-pedersen-proof"]
-    [c1, v1, u0] = map (fromJust . nonceAt nonces) [0,1,2]
+    nonces = initNonces seed [Left $ bs"disjoint-chaum-pedersen-proof"]
+    [c1, v1, u0] = map (nonceAt nonces) [0,1,2]
 
     a0         = gPowP $ POrQ'Q u0
     b0         = k ^% u0
@@ -366,8 +366,8 @@ disjunctiveChaumPedersenOne ::
 disjunctiveChaumPedersenOne message r k qBar seed =
   let
     (alpha, beta) = (pubKey message, ciphertext message)
-    nonces = initNonces seed [bs"disjoint-chaum-pedersen-proof"]
-    [c0, v0, u1] = map (fromJust . nonceAt nonces) [0,1,2]
+    nonces = initNonces seed [Left $ bs"disjoint-chaum-pedersen-proof"]
+    [c0, v0, u1] = map (nonceAt nonces) [0,1,2]
 
     qMinusC0 = negateN c0
     a0       = gPowP (POrQ'Q v0) * alpha ^% qMinusC0
@@ -401,8 +401,8 @@ chaumPedersen message s m seed hashHeader =
   let
     (alpha, beta) = (pubKey message, ciphertext message)
     -- Pick one random number in Q.
-    u = fromJust $  nonceAt (initNonces seed [bs"constant-chaum-pedersen-proof"]) 0
-    a = gPowP (POrQ'Q u)                         -- 𝑔^𝑢𝑖 mod 𝑝
+    u = nonceAt (initNonces seed [Left $ bs"constant-chaum-pedersen-proof"]) 0
+    a = gPowP (POrQ'Q u)                        -- 𝑔^𝑢𝑖 mod 𝑝
     b = alpha ^% u                              -- 𝐴^𝑢𝑖 mod 𝑝
     c = hash (hashHeader, alpha, beta, a, b, m) -- sha256(𝑄', A, B, a𝑖, b𝑖, 𝑀𝑖)
     v = u + c * s                               -- (𝑢𝑖 + 𝑐𝑖𝑠𝑖) mod 𝑞
@@ -426,7 +426,7 @@ constantChaumPedersen message constant r k seed hashHeader =
   let
     (alpha, beta) = (pubKey message, ciphertext message)
     -- Pick one random number in Q.
-    u = fromJust $ nonceAt (initNonces seed [bs"constant-chaum-pedersen-proof"]) 0
+    u = nonceAt (initNonces seed [Left $ bs"constant-chaum-pedersen-proof"]) 0
     a = gPowP (POrQ'Q u)  -- 𝑔^𝑢𝑖 mod 𝑝
     b = k ^% u  -- 𝐴^𝑢𝑖 mod 𝑝
     c = hash (hashHeader, alpha, beta, a, b)  -- sha256(𝑄', A, B, a, b)
