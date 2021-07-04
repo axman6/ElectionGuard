@@ -1,61 +1,75 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE TypeFamilies #-}
 module Schnorr where
 
-import ElGamal
+import ElGamal ( ElGamalKeyPair(publicKey, secretKey) )
 import Group
-import Hash
-import Proof
+    ( ElementModPOrQ(POrQ'Q),
+      ElementModP,
+      ElementModQ,
+      ElementMod,
+      ParamName(P),
+      powMod,
+      gPowP,
+      mult,
+      isValidResidue,
+      inBounds )
+import Hash ( hash )
+import Proof ( IsProof(..), Proof(..), ProofUsage(SecretValue) )
 
 data SchnorrProof = SchnorrProof
   { pubKey :: ElementModP
   , commitment :: ElementModP
   , challenge  :: ElementModQ
   , response :: ElementModQ
-  , usage :: ProofUsage
   } deriving stock (Show)
 
-isValid :: SchnorrProof -> Either String ()
-isValid self@SchnorrProof{..} =
-  let
-    k = pubKey
-    h = commitment
-    u = response
-    validPublicKey = isValidResidue k
-    inBoundsH = inBounds h
-    inBoundsU = inBounds u
+{- | Check validity of the `proof` for proving possession of the private key corresponding to `public_key`.
+-}
+instance IsProof SchnorrProof where
+  type ProofArguments SchnorrProof = '[]
+  proofData _ = Proof "Schnorr Proof" SecretValue
 
-    c = hash (k, h)
+  isValid :: SchnorrProof -> Either String ()
+  isValid self@SchnorrProof{..} =
+    let
+      k = pubKey
+      h = commitment
+      u = response
+      validPublicKey = isValidResidue k
+      inBoundsH = inBounds h
+      inBoundsU = inBounds u
 
-    validProof = gPowP (POrQ'Q u) == mult h (powMod k c :: ElementMod 'P)
+      c = hash (k, h)
 
-    success = and [validPublicKey, inBoundsH, inBoundsU, validProof]
-    s :: String -> String
-    s = id
+      validProof = gPowP (POrQ'Q u) == mult h (powMod k c :: ElementMod 'P)
 
-  in if success
-    then Right ()
-    else Left $ "Invalid Schnorr proof:\n" <> show
-                    (
-                        s"in_bounds_h", inBoundsH,
-                        s"inBoundsU", inBoundsU,
-                        s"validPublicKey", validPublicKey,
-                        s"validProof", validProof,
-                        s"proof", self
-                    )
+      success = and [validPublicKey, inBoundsH, inBoundsU, validProof]
+      s :: String -> String
+      s = id
+
+    in if success
+      then Right ()
+      else Left $ "Invalid Schnorr Proof:\n" <> unlines
+                      [ "in_bounds_h: " <> show inBoundsH
+                      , "in_bounds_u: " <> show inBoundsU
+                      , "valid_public_key: " <> show validPublicKey
+                      , "valid_proof: " <> show validProof
+                      , "proof: " <> show self
+                      ]
 
 
 schnorrProof :: ElGamalKeyPair -> ElementModQ -> SchnorrProof
-schnorrProof kp r =
+schnorrProof kp r' =
   let
     k = publicKey kp
-    h = gPowP (POrQ'Q r)
+    h = gPowP (POrQ'Q r')
     c = hash (k, h)
-    u = r + secretKey kp + c
+    u = r' + secretKey kp + c
   in SchnorrProof
       { pubKey = k
       , commitment = h
       , challenge = c
       , response = u
-      , usage = SecretValue
       }
