@@ -12,6 +12,13 @@ import Group (ElementModQ, elementMod, toHex, ElementMod, Parameter, ElementModP
 import Data.ByteString (ByteString)
 import Data.ByteString.Char8 (pack)
 
+
+class CryptoHashCheckable a where
+  cryptoHashWith :: a -> ElementModQ -> ElementModQ
+
+
+
+
 toModQ :: ByteString -> ElementModQ
 toModQ = elementMod . os2ip
 
