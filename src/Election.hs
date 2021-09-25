@@ -1,6 +1,6 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE DataKinds #-}
-module Election where
+module Election (module Election) where
 
 import Group
     ( ElementModP,

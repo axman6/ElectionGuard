@@ -2,6 +2,7 @@
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE NumericUnderscores #-}
+{-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
 module ChaumPedersen (module ChaumPedersen) where
 
 import Proof ( IsProof(..), Proof (..), ProofUsage (SecretValue, SelectionValue, SelectionLimit) )

@@ -1,7 +1,10 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE TypeFamilies #-}
-module Schnorr where
+module Schnorr
+  ( SchnorrProof(..)
+  , schnorrProof
+  ) where
 
 import ElGamal ( ElGamalKeyPair(publicKey, secretKey) )
 import Group
