@@ -12,6 +12,7 @@ import Group
       gPowP,
       mult, multInv )
 import DLog (dlog)
+import Hash
 
 type ElGamalSecretKey = ElementModQ
 type ElGamalPublicKey = ElementModP
@@ -25,6 +26,9 @@ data ElGamalCiphertext = ElGamalCiphertext
   { pubKey :: {-#UNPACK#-}!ElementModP
   , ciphertext :: {-#UNPACK#-}!ElementModP
   } deriving stock (Show, Eq)
+
+instance Hashed ElGamalCiphertext where
+  hashTree ElGamalCiphertext{..} = hashTree (pubKey,ciphertext)
 
 keypairFromSecret :: ElementModQ -> Maybe ElGamalKeyPair
 keypairFromSecret a@(ElementMod n)
