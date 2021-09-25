@@ -64,15 +64,18 @@ library
   exposed-modules:     Group
                     ,  Types
                     ,  Auxiliary
+                    ,  Ballot
                     ,  ElGamal
                     ,  ElectionGuard
                     ,  DLog
                     ,  Hash
                     ,  Election
+                    ,  ElectionPolynomial
                     ,  Proof
                     ,  Schnorr
                     ,  Nonce
                     ,  ChaumPedersen
+                    ,  ElectionObjectBase
 
 executable ElectionGuard
   import:              common-options
