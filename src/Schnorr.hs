@@ -49,8 +49,6 @@ instance IsProof SchnorrProof where
       validProof = gPowP (POrQ'Q u) == mult h (powMod k c :: ElementMod 'P)
 
       success = and [validPublicKey, inBoundsH, inBoundsU, validProof]
-      s :: String -> String
-      s = id
 
     in if success
       then Right ()
