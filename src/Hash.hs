@@ -135,6 +135,15 @@ instance (Hashed a, Hashed b, Hashed c, Hashed d, Hashed e, Hashed f) => Hashed 
 instance (Hashed a, Hashed b, Hashed c, Hashed d, Hashed e, Hashed f, Hashed g) => Hashed (a,b,c,d,e,f,g) where
   hashTree (a,b,c,d,e,f,g) = Sequence [hashTree a, hashTree b, hashTree c, hashTree d, hashTree e, hashTree f, hashTree g]
 
+instance (Hashed a, Hashed b, Hashed c, Hashed d, Hashed e, Hashed f, Hashed g, Hashed h) => Hashed (a,b,c,d,e,f,g,h) where
+  hashTree (a,b,c,d,e,f,g,h) = Sequence [hashTree a, hashTree b, hashTree c, hashTree d, hashTree e, hashTree f, hashTree g, hashTree h]
+
+instance (Hashed a, Hashed b, Hashed c, Hashed d, Hashed e, Hashed f, Hashed g, Hashed h, Hashed i) => Hashed (a,b,c,d,e,f,g,h,i) where
+  hashTree (a,b,c,d,e,f,g,h,i) = Sequence [hashTree a, hashTree b, hashTree c, hashTree d, hashTree e, hashTree f, hashTree g, hashTree h, hashTree i]
+
+instance (Hashed a, Hashed b, Hashed c, Hashed d, Hashed e, Hashed f, Hashed g, Hashed h, Hashed i, Hashed j) => Hashed (a,b,c,d,e,f,g,h,i,j) where
+  hashTree (a,b,c,d,e,f,g,h,i,j) = Sequence [hashTree a, hashTree b, hashTree c, hashTree d, hashTree e, hashTree f, hashTree g, hashTree h, hashTree i, hashTree j]
+
 instance Hashed Integer where
   hashTree = Item . pack . show
 

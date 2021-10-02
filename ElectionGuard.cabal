@@ -31,6 +31,7 @@ common common-options
                     ,  memory
                     ,  base16-bytestring
                     ,  QuickCheck
+                    ,  containers
 
   ghc-options:         -Wall
                        -Wcompat

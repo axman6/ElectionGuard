@@ -38,6 +38,15 @@ data CiphertextElectionContext = CiphertextElectionContext
   , cryptoExtendedBaseHash :: ElementModQ
   }
 
+{-|
+    Makes a CiphertextElectionContext.
+
+    :param number_of_guardians: The number of guardians necessary to generate the public key
+    :param quorum: The quorum of guardians necessary to decrypt an election.  Must be less than `number_of_guardians`
+    :param elgamal_public_key: the public key of the election
+    :param commitment_hash: the hash of the commitments the guardians make to each other
+    :param manifest_hash: the hash of the election metadata
+-}
 makeCipherTextElectionContext ::
   Integer
   -> Integer
@@ -61,3 +70,4 @@ makeCipherTextElectionContext
           )
         cryptoExtendedBaseHash = hash (cryptoBaseHash, commitmentHash)
     in CiphertextElectionContext{..}
+
