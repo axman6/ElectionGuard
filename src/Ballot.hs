@@ -4,21 +4,34 @@
 {-# OPTIONS_GHC -Wno-unused-imports #-}
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE PartialTypeSignatures #-}
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# OPTIONS_GHC -Wno-partial-type-signatures #-}
+
 module Ballot (module Ballot) where -- (CiphertextBallotSelection,isValidEncryption,validPlaintextBallotSelection) where
 
 import Data.List ( sort )
+import Data.Foldable (for_)
 
 import Data.ByteString (ByteString)
 import Group (ElementModQ, ElementModP, zeroModQ)
-import ElGamal (ElGamalCiphertext (ElGamalCiphertext))
+import ElGamal (ElGamalCiphertext (ElGamalCiphertext), add)
 import ChaumPedersen (DisjunctiveChaumPedersenProof, ConstantChaumPedersenProof)
-import ElectionObjectBase (HasElectionObjectBase (getObjectIdStr), HasOrderedObjectBase (getOrderedObjectBase), ElectionObjectBase (ElectionObjectBase), OrderedObjectBase, sequenceOrderSort)
-import Election (CiphertextElectionContext)
-import Proof (IsProof(isValid))
+import ElectionObjectBase (HasElectionObjectBase (getObjectIdStr), HasOrderedObjectBase (getOrderedObjectBase), ElectionObjectBase (ElectionObjectBase, objectIdStr), OrderedObjectBase, sequenceOrderSort)
+import Election (CiphertextElectionContext (elgamalPublicKey))
+import Proof (IsProof(..), Proof (Proof), ProofUsage (Unknown))
 import Hash (CryptoHashCheckable (cryptoHashWith), hash)
+import Data.Maybe (fromMaybe)
 
 listEq :: [ElectionObjectBase] -> [ElectionObjectBase] -> Bool
 listEq l1 l2 = sort l1 == sort l2
+
+mismatch :: (HasElectionObjectBase a, Show b) => String -> a -> b -> b -> Either String c
+mismatch err self a b =
+      Left $ err <> ": " <> show (getObjectIdStr self) <> "\n\
+      \expected(" <> show a <> "),\n\
+      \  actual(" <> show b <> ")"
+
 
 {-| ExtendedData represents any arbitrary data expressible as a string with a length.
 
@@ -108,22 +121,23 @@ instance HasCiphertextSelection CiphertextBallotSelection where
   descriptionHash = _descriptionHash
   ciphertext = _ciphertext
 
-
-
-isValidEncryption :: CiphertextBallotSelection -> ElementModQ -> ElementModP -> ElementModQ -> Either String ()
-isValidEncryption self@CiphertextBallotSelection{..} encryptionSeed elgamalPublicKey cryptoExtendedBaseHash
-  | encryptionSeed /= descriptionHash self = Left $
-    "mismatching selection hash: "<> show (getObjectIdStr self)
-    <> " expected(" <> show encryptionSeed <> "),"
-    <> " actual(" <> show (descriptionHash self) <> ")"
-  | recalculatedCryptoHash <- cryptoHashWith self encryptionSeed
-  , cryptoHash /= recalculatedCryptoHash = Left $
-    "mismatching crypto hash: " <> show (getObjectIdStr self)
-    <> " expected("<> show recalculatedCryptoHash <> "),"
-    <> " actual("<> show cryptoHash <> ")"
-  | Nothing <- proof = Left $
-    "No proof exists for: "<> show (getObjectIdStr self)
-  | Just prf <- proof = isValid prf (ciphertext self) elgamalPublicKey cryptoExtendedBaseHash
+instance IsProof CiphertextBallotSelection where
+  type ProofArguments CiphertextBallotSelection = '[ElementModQ, ElementModP, ElementModQ]
+  proofData _ = Proof "CiphertextBallotSelection Proof" Unknown
+  isValid :: CiphertextBallotSelection -> ElementModQ -> ElementModP -> ElementModQ -> Either String ()
+  isValid self@CiphertextBallotSelection{..} encryptionSeed elgamalPublicKey cryptoExtendedBaseHash
+    | encryptionSeed /= descriptionHash self = Left $
+      "mismatching selection hash: "<> show (getObjectIdStr self)
+      <> " expected(" <> show encryptionSeed <> "),"
+      <> " actual(" <> show (descriptionHash self) <> ")"
+    | recalculatedCryptoHash <- cryptoHashWith self encryptionSeed
+    , cryptoHash /= recalculatedCryptoHash = Left $
+      "mismatching crypto hash: " <> show (getObjectIdStr self)
+      <> " expected("<> show recalculatedCryptoHash <> "),"
+      <> " actual("<> show cryptoHash <> ")"
+    | Nothing <- proof = Left $
+      "No proof exists for: "<> show (getObjectIdStr self)
+    | Just prf <- proof = isValid prf (ciphertext self) elgamalPublicKey cryptoExtendedBaseHash
 
 
 instance CryptoHashCheckable CiphertextBallotSelection where
@@ -187,6 +201,24 @@ instance CryptoHashCheckable CiphertextBallotContest where
          , (cryptoHash :: CiphertextBallotSelection -> _) <$> sequenceOrderSort ballotSelections
          , encryptionSeed)
 
+instance IsProof CiphertextBallotContest where
+  type ProofArguments CiphertextBallotContest = '[ElementModQ, ElementModP, ElementModQ]
+  proofData _ = Proof "CiphertextBallotContest Proof" Unknown
+  isValid :: CiphertextBallotContest -> ElementModQ -> ElementModP -> ElementModQ -> Either String ()
+  isValid self encryptionSeed elgamalPublicKey cryptoExtendedBaseHash
+    | encryptionSeed /=  dHash = mismatch "mismatching contest hash" self encryptionSeed dHash
+    | cHash /= recalculatedCryptoHash = mismatch "mismatching crypto hash" self recalculatedCryptoHash cHash
+    | Nothing <- (proof :: CiphertextBallotContest -> _) self = Left $ "no proof exists for: " <> show (getObjectIdStr self)
+    -- TODO: write elgamal_accumulate, finish this
+    | computedCiphertextAccumulation /= ciphertextAccumulation self = Left $ "ciphertext does not equal elgamal accumulation for: " <> show (getObjectIdStr self)
+    | Just proof <-  (proof :: CiphertextBallotContest -> _) self = isValid proof (ciphertextAccumulation self) elgamalPublicKey cryptoExtendedBaseHash
+    where recalculatedCryptoHash = cryptoHashWith self encryptionSeed
+          dHash = (_descriptionHash :: CiphertextBallotContest -> _) self
+          cHash = (cryptoHash :: CiphertextBallotContest -> _) self
+          computedCiphertextAccumulation = elgamalAccumulate self
+
+elgamalAccumulate :: CiphertextBallotContest-> ElGamalCiphertext
+elgamalAccumulate = foldl1 add . map (ciphertext :: CiphertextBallotSelection -> _)  . (ballotSelections :: CiphertextBallotContest -> _)
 
 data PlaintextBallot = PlaintextBallot
   { _objectId :: ElectionObjectBase
@@ -196,18 +228,23 @@ data PlaintextBallot = PlaintextBallot
 
 instance HasElectionObjectBase PlaintextBallot where getObjectIdStr = _objectId
 
-isValidPlaintextBallot :: PlaintextBallotContest -> ByteString -> Either String ()
-isValidPlaintextBallot self expectedBallotStyleId
-  | styleId self /= expectedBallotStyleId = Left $
-    "invalid ballot_style: for: "<> show (getObjectIdStr self)
-    <> " expected(" <> show expectedBallotStyleId <> ")"
-    <> " actual("<> show (styleId self) <> ")"
-  | otherwise = Right ()
+
+instance IsProof PlaintextBallot where
+  type ProofArguments PlaintextBallot = '[ByteString]
+  proofData _ = Proof "PlaintextBallot Proof" Unknown
+  isValid :: PlaintextBallot -> ByteString -> Either String ()
+  isValid self expectedBallotStyleId
+    | (styleId :: PlaintextBallot -> _) self /= expectedBallotStyleId = Left $
+      "invalid ballot_style: for: "<> show (getObjectIdStr self)
+      <> " expected(" <> show expectedBallotStyleId <> ")"
+      <> " actual("<> show ((styleId :: PlaintextBallot -> _) self) <> ")"
+    | otherwise = Right ()
 
 data CiphertextBallot = CiphertextBallot
   { _objectId :: ElectionObjectBase
   , styleId :: ByteString
   , manifestHash :: ElementModQ
+  , codeSeed :: ElementModQ
   , contests :: [CiphertextBallotContest]
   , code :: ElementModQ
   , timestamp :: Integer
@@ -220,8 +257,75 @@ nonceSeed manifestHash objectId nonce = hash (manifestHash, objectId, nonce)
 
 hashedBallotNonce :: CiphertextBallot -> Maybe ElementModQ
 hashedBallotNonce self =
-  nonceSeed (manifestHash self) (objectId self) <$> (nonce :: CiphertextBallot -> _) self
+  nonceSeed (manifestHash self) (getObjectIdStr self) <$> (nonce :: CiphertextBallot -> _) self
+
+instance HasElectionObjectBase CiphertextBallot where
+  getObjectIdStr = _objectId
 
 instance CryptoHashCheckable CiphertextBallot where
   cryptoHashWith self encryptionSeed
-    | null ((contests :: CiphertextBallot -> _) self) = zeroModQ
+    | null ((contests :: CiphertextBallot -> _) self) = zeroModQ -- TODO: Add logging with writer?
+    | otherwise = hash
+      ( getObjectIdStr self
+      , encryptionSeed
+      , (cryptoHash :: CiphertextBallotContest -> _)
+        <$> sequenceOrderSort ((contests :: CiphertextBallot -> _) self)
+      )
+
+instance IsProof CiphertextBallot where
+  type ProofArguments CiphertextBallot = '[ElementModQ, ElementModP, ElementModQ]
+  proofData _ = Proof "CiphertextBallot Proof" Unknown
+  isValid :: CiphertextBallot -> ElementModQ -> ElementModP -> ElementModQ -> Either String ()
+  isValid self encryptionSeed elgamalPublicKey cryptoExtendedBaseHash
+      | encryptionSeed /= manifestHash self = mismatch "mismatching ballot" self encryptionSeed (manifestHash self)
+      | recalculatedCryptoHash /= cHash = mismatch "mismatching crypto hash" self recalculatedCryptoHash cHash
+      | otherwise =
+        for_ ((contests :: CiphertextBallot -> _) self) $ \contest -> do
+          for_ ((ballotSelections :: CiphertextBallotContest -> _) contest) $ \selection ->
+            isValid selection (descriptionHash selection) elgamalPublicKey cryptoExtendedBaseHash
+          isValid contest ((_descriptionHash :: CiphertextBallotContest -> _) contest) elgamalPublicKey cryptoExtendedBaseHash
+    where recalculatedCryptoHash = cryptoHashWith self encryptionSeed
+          cHash = (cryptoHash :: CiphertextBallot -> _) self
+
+data BallotBoxState
+  = CAST
+  | SPOILED
+  | UNKNOWN
+  deriving stock (Show, Eq)
+
+data SubmittedBallot = SubmittedBallot
+  { ballot :: CiphertextBallot
+  , state :: BallotBoxState
+  }
+
+makeCipherTextBallot ::
+  ElectionObjectBase
+  -> ByteString
+  -> ElementModQ
+  -> Maybe ElementModQ
+  -> [CiphertextBallotContest]
+  -> Maybe ElementModQ
+  -> Maybe Integer
+  -> Maybe ElementModQ
+  -> IO (Either String CiphertextBallot)
+makeCipherTextBallot
+  _objectId
+  styleId
+  manifestHash
+  codeSeed0
+  contests
+  nonce
+  timestamp0
+  ballotCode
+    | null contests = pure (Left "ciphertext ballot with no contests")
+    | otherwise = do
+      timestamp <- case timestamp0 of Nothing -> error "getTime"; Just a -> pure a
+      let cryptoHash = createBallotHash (objectIdStr _objectId) manifestHash contests
+          codeSeed = fromMaybe manifestHash codeSeed0
+          code = fromMaybe (hash (codeSeed, timestamp, cryptoHash)) ballotCode
+      pure (Right CiphertextBallot{..})
+
+createBallotHash :: ByteString -> ElementModQ -> [CiphertextBallotContest] -> ElementModQ
+createBallotHash ballotId _descriptionHash contests =
+    let contestHashes = map (cryptoHash :: CiphertextBallotContest -> _) $ sequenceOrderSort contests
+    in hash (ballotId, _descriptionHash, contestHashes)
