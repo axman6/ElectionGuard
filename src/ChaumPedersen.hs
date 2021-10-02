@@ -333,13 +333,12 @@ disjunctiveChaumPedersenZero message r k qBar seed =
   let
     (alpha, beta) = (pubKey message, ciphertext message)
     nonces = initNonces seed [Left $ bs"disjoint-chaum-pedersen-proof"]
-    [c1, v1, u0] = map (nonceAt nonces) [0,1,2]
+    [c1, v, u0] = map (nonceAt nonces) [0,1,2]
 
     a0         = gPowP $ POrQ'Q u0
     b0         = k ^% u0
-    qMinusC1   = negateN c1
-    a1         = gPowP (POrQ'Q v1) * alpha ^% qMinusC1
-    b1         = k ^% v1 * gPowP (POrQ'Q c1) * beta ^% qMinusC1
+    a1         = gPowP v
+    b1         = mult (k ^% v :: ElementModP) (gPowP (POrQ'Q c1))
     c          = hash (qBar, alpha, beta, a0, b0, a1, b1)
     c0         = c - c1
     v0         = u0 + c0 * r
@@ -368,15 +367,16 @@ disjunctiveChaumPedersenOne message r k qBar seed =
   let
     (alpha, beta) = (pubKey message, ciphertext message)
     nonces = initNonces seed [Left $ bs"disjoint-chaum-pedersen-proof"]
-    [c0, v0, u1] = map (nonceAt nonces) [0,1,2]
+    [w, v, u1] = map (nonceAt nonces) [0,1,2]
 
-    qMinusC0 = negateN c0
-    a0       = gPowP (POrQ'Q v0) * alpha ^% qMinusC0
-    b0       = k ^% v0 * gPowP (POrQ'Q c1) * beta ^% qMinusC0
+    a0       = gPowP v
+    b0       = (k ^% v :: ElementModP) `mult` gPowP (POrQ'Q w)
     a1       = gPowP $ POrQ'Q u1
     b1       = k ^% u1
     c        = hash (qBar, alpha, beta, a0, b0, a1, b1)
-    c1       = c - c0
+    c0       = negateN  w
+    c1       = c + w
+    v0       = v + c0 * r
     v1       = u1 + c1 * r
 
   in DisjunctiveChaumPedersenProof
