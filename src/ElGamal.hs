@@ -3,16 +3,15 @@
 module ElGamal (module ElGamal) where
 
 import Group
-    ( ElementModPOrQ(POrQ'Q),
-      ElementModP,
+    ( ElementModP,
       ElementModQ,
       ElementMod(ElementMod),
       zeroModQ,
       powMod,
       gPowP,
-      mult, multInv )
+      mult, multInv, elementMod )
 import DLog (dlog)
-import Hash
+import Hash ( Hashed(..) )
 
 type ElGamalSecretKey = ElementModQ
 type ElGamalPublicKey = ElementModP
@@ -33,13 +32,13 @@ instance Hashed ElGamalCiphertext where
 keypairFromSecret :: ElementModQ -> Maybe ElGamalKeyPair
 keypairFromSecret a@(ElementMod n)
   | n < 2 = Nothing
-  | otherwise = Just $ ElGamalKeyPair a (gPowP $ POrQ'Q a)
+  | otherwise = Just $ ElGamalKeyPair a (gPowP a)
 
-encrypt :: Int -> ElementModQ -> ElementModP -> Maybe ElGamalCiphertext
+encrypt :: Integer -> ElementModQ -> ElementModP -> Maybe ElGamalCiphertext
 encrypt m nonce pubK =
   let
-    pubKey = gPowP (POrQ'Q nonce)
-    gpowp_m = gPowP (POrQ'Q (ElementMod (toInteger m)))
+    pubKey = gPowP nonce
+    gpowp_m = gPowP (elementMod m :: ElementModP)
     pubkey_pow_n = powMod pubK nonce :: ElementModP
     ciphertext = mult gpowp_m pubkey_pow_n
 

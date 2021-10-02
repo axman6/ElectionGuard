@@ -8,7 +8,7 @@ import Crypto.Hash
     ( hashFinalize, hashInit, hashUpdate, SHA256 (SHA256), Context, Digest, hashWith )
 import Data.ByteArray ( ByteArray, convert )
 
-import Group (ElementModQ, elementMod, toHex, ElementMod, Parameter, ElementModPOrQ, AsInteger (asInteger), ElementModPOrQOrInt, ElementModQOrInt, ElementModPOrInt)
+import Group (ElementModQ, elementMod, toHex, ElementMod, Parameter, ElementModPOrQ, AsInteger (asInteger))
 import Data.ByteString (ByteString)
 import Data.ByteString.Char8 (pack)
 
@@ -139,10 +139,7 @@ instance Hashed Integer where
   hashTree = Item . pack . show
 
 
-instance Hashed ElementModPOrQ      where hashTree = hashTree . asInteger
-instance Hashed ElementModPOrQOrInt where hashTree = hashTree . asInteger
-instance Hashed ElementModQOrInt    where hashTree = hashTree . asInteger
-instance Hashed ElementModPOrInt    where hashTree = hashTree . asInteger
+instance Hashed ElementModPOrQ where hashTree = hashTree . asInteger
 
 -- data Input p
 --   = External Integer

@@ -8,6 +8,7 @@
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeOperators #-}
+{-# OPTIONS_GHC -Wno-redundant-constraints #-}
 
 module Group (module Group, Proxy(..)) where
 
@@ -25,6 +26,7 @@ import Data.ByteString.Base16 (encode)
 import Crypto.Number.Serialize (i2osp)
 
 import Test.QuickCheck ( chooseInteger, Arbitrary(arbitrary) )
+import TypeLevel (OneOf)
 
 
 -- 𝑞 = 2^256 − 189
@@ -139,36 +141,6 @@ instance AsInteger ElementModPOrQ where
   asInteger (POrQ'P (ElementMod i)) = i
   asInteger (POrQ'Q (ElementMod i)) = i
 
-data ElementModPOrQOrInt
-  = POrQOrInt'P ElementModP
-  | POrQOrInt'Q ElementModQ
-  | POrQOrInt'Int Integer
-
-instance AsInteger ElementModPOrQOrInt where
-  {-# INLINE asInteger #-}
-  asInteger (POrQOrInt'P (ElementMod i)) = i
-  asInteger (POrQOrInt'Q (ElementMod i)) = i
-  asInteger (POrQOrInt'Int           i)  = i
-
-data ElementModQOrInt
-  = QOrInt'Q ElementModQ
-  | QOrInt'Int Integer
-
-instance AsInteger ElementModQOrInt where
-  {-# INLINE asInteger #-}
-  asInteger (QOrInt'Q (ElementMod i)) = i
-  asInteger (QOrInt'Int           i)  = i
-
-
-data ElementModPOrInt
-  = POrInt'P ElementModP
-  | POrInt'Int Integer
-
-instance AsInteger ElementModPOrInt where
-  {-# INLINE asInteger #-}
-  asInteger (POrInt'P (ElementMod i)) = i
-  asInteger (POrInt'Int           i)  = i
-
 
 powMod :: forall a b p. (AsInteger a, AsInteger b, Parameter p) => a -> b -> ElementMod p
 powMod a b = ElementMod (expSafe (asInteger a) (asInteger b) (param' @p Proxy))
@@ -177,7 +149,7 @@ infixr 8 ^%
 (^%) :: forall a b p. (AsInteger a, AsInteger b, Parameter p) => a -> b -> ElementMod p
 (^%) = powMod
 
-gPowP :: ElementModPOrQ -> ElementModP
+gPowP :: (OneOf t '[ElementModP, ElementModQ], AsInteger t) => t -> ElementModP
 gPowP = powMod (ElementMod @'P g)
 
 {-# INLINE mult #-}

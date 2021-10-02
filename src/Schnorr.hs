@@ -8,8 +8,7 @@ module Schnorr
 
 import ElGamal ( ElGamalKeyPair(publicKey, secretKey) )
 import Group
-    ( ElementModPOrQ(POrQ'Q),
-      ElementModP,
+    ( ElementModP,
       ElementModQ,
       ElementMod,
       ParamName(P),
@@ -46,7 +45,7 @@ instance IsProof SchnorrProof where
 
       c = hash (k, h)
 
-      validProof = gPowP (POrQ'Q u) == mult h (powMod k c :: ElementMod 'P)
+      validProof = gPowP u == mult h (powMod k c :: ElementMod 'P)
 
       success = and [validPublicKey, inBoundsH, inBoundsU, validProof]
 
@@ -65,12 +64,7 @@ schnorrProof :: ElGamalKeyPair -> ElementModQ -> SchnorrProof
 schnorrProof kp r' =
   let
     k = publicKey kp
-    h = gPowP (POrQ'Q r')
+    h = gPowP r'
     c = hash (k, h)
     u = r' + secretKey kp + c
-  in SchnorrProof
-      { pubKey = k
-      , commitment = h
-      , challenge = c
-      , response = u
-      }
+  in SchnorrProof { pubKey = k , commitment = h , challenge = c , response = u }

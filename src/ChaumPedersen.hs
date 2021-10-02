@@ -8,13 +8,12 @@ module ChaumPedersen (module ChaumPedersen) where
 import Proof ( IsProof(..), Proof (..), ProofUsage (SecretValue, SelectionValue, SelectionLimit) )
 import ElGamal ( ElGamalCiphertext(pubKey, ciphertext) )
 import Group
-    ( ElementModPOrQ(POrQ'Q),
-      ElementModP,
+    ( ElementModP,
       ElementModQ,
       (^%),
       gPowP,
       isValidResidue,
-      inBounds, ParamName (Q), zeroModQ, ElementMod (ElementMod), negateN )
+      inBounds, ParamName (Q), zeroModQ, ElementMod (ElementMod), negateN, mult )
 import Hash ( hash, bs )
 import Nonce (initNonces, nonceAt)
 import Data.Maybe ()
@@ -70,10 +69,10 @@ instance IsProof DisjunctiveChaumPedersenProof where
       inBoundsV1    = inBounds v1
 
       consistentC   = c0 + c1 == c && c == hash (qBar, alpha, beta, a0, b0, a1, b1)
-      consistentGv0 = gPowP (POrQ'Q v0)              == a0 * alpha ^% c0
-      consistentGv1 = gPowP (POrQ'Q v1)              == a1 * alpha ^% c1
+      consistentGv0 = gPowP v0              == a0 * alpha ^% c0
+      consistentGv1 = gPowP v1              == a1 * alpha ^% c1
       consistentKv0 = k ^% v0                        == b0 * beta ^% c0
-      consistentGc1kv1 = gPowP (POrQ'Q c1) * k ^% v1 == b1 * beta ^% c1
+      consistentGc1kv1 = gPowP c1 * k ^% v1 == b1 * beta ^% c1
 
       success = and
         [ inBoundsAlpha
@@ -170,7 +169,7 @@ instance IsProof ChaumPedersenProof where
         , inBoundsA
         , inBoundsC
       --  The equation 𝑔^𝑣𝑖 = 𝑎𝑖𝐾^𝑐𝑖
-        , gPowP (POrQ'Q v) == a * k ^% c
+        , gPowP v == a * k ^% c
         ]
 
         -- The equation 𝐴^𝑣𝑖 = 𝑏𝑖𝑀𝑖^𝑐𝑖 mod 𝑝
@@ -270,13 +269,13 @@ instance IsProof ConstantChaumPedersenProof where
         , inBoundsAlpha
         , inBoundsC
          -- The equation 𝑔^𝑉 = 𝑎𝐴^𝐶 mod 𝑝
-        , gPowP (POrQ'Q v) == a * alpha ^% c
+        , gPowP v == a * alpha ^% c
         ]
 
       -- The equation 𝑔^𝐿𝐾^𝑣 = 𝑏𝐵^𝐶 mod 𝑝
       consistentKV =
         inBoundsConstant
-        && gPowP (POrQ'Q $ c * constantQ) * k ^% v == b * beta ^% c
+        && gPowP (c * constantQ) * k ^% v == b * beta ^% c
 
       success = and
         [ inBoundsAlpha
@@ -335,10 +334,10 @@ disjunctiveChaumPedersenZero message r k qBar seed =
     nonces = initNonces seed [Left $ bs"disjoint-chaum-pedersen-proof"]
     [c1, v, u0] = map (nonceAt nonces) [0,1,2]
 
-    a0         = gPowP $ POrQ'Q u0
+    a0         = gPowP u0
     b0         = k ^% u0
     a1         = gPowP v
-    b1         = mult (k ^% v :: ElementModP) (gPowP (POrQ'Q c1))
+    b1         = mult (k ^% v :: ElementModP) (gPowP c1)
     c          = hash (qBar, alpha, beta, a0, b0, a1, b1)
     c0         = c - c1
     v0         = u0 + c0 * r
@@ -352,7 +351,7 @@ disjunctiveChaumPedersenZero message r k qBar seed =
     , proofOneChallenge = c1
     , challenge = c
     , proofZeroResponse = v0
-    , proofOneResponse = v1
+    , proofOneResponse = v
     }
 
 -- | Produces a "disjunctive" proof that an encryption of one is either an encrypted zero or one.
@@ -370,8 +369,8 @@ disjunctiveChaumPedersenOne message r k qBar seed =
     [w, v, u1] = map (nonceAt nonces) [0,1,2]
 
     a0       = gPowP v
-    b0       = (k ^% v :: ElementModP) `mult` gPowP (POrQ'Q w)
-    a1       = gPowP $ POrQ'Q u1
+    b0       = (k ^% v :: ElementModP) `mult` gPowP w
+    a1       = gPowP u1
     b1       = k ^% u1
     c        = hash (qBar, alpha, beta, a0, b0, a1, b1)
     c0       = negateN  w
@@ -403,7 +402,7 @@ chaumPedersen message s m seed hashHeader =
     (alpha, beta) = (pubKey message, ciphertext message)
     -- Pick one random number in Q.
     u = nonceAt (initNonces seed [Left $ bs"constant-chaum-pedersen-proof"]) 0
-    a = gPowP (POrQ'Q u)                        -- 𝑔^𝑢𝑖 mod 𝑝
+    a = gPowP  u                                -- 𝑔^𝑢𝑖 mod 𝑝
     b = alpha ^% u                              -- 𝐴^𝑢𝑖 mod 𝑝
     c = hash (hashHeader, alpha, beta, a, b, m) -- sha256(𝑄', A, B, a𝑖, b𝑖, 𝑀𝑖)
     v = u + c * s                               -- (𝑢𝑖 + 𝑐𝑖𝑠𝑖) mod 𝑞
@@ -428,8 +427,8 @@ constantChaumPedersen message constant r k seed hashHeader =
     (alpha, beta) = (pubKey message, ciphertext message)
     -- Pick one random number in Q.
     u = nonceAt (initNonces seed [Left $ bs"constant-chaum-pedersen-proof"]) 0
-    a = gPowP (POrQ'Q u)  -- 𝑔^𝑢𝑖 mod 𝑝
-    b = k ^% u  -- 𝐴^𝑢𝑖 mod 𝑝
+    a = gPowP u                               -- 𝑔^𝑢𝑖 mod 𝑝
+    b = k ^% u                                -- 𝐴^𝑢𝑖 mod 𝑝
     c = hash (hashHeader, alpha, beta, a, b)  -- sha256(𝑄', A, B, a, b)
     v = u + c * r
   in ConstantChaumPedersenProof
