@@ -7,6 +7,7 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# OPTIONS_GHC -Wno-partial-type-signatures #-}
+{-# OPTIONS_GHC -Wno-name-shadowing #-}
 
 module Ballot (module Ballot) where -- (CiphertextBallotSelection,isValidEncryption,validPlaintextBallotSelection) where
 
@@ -16,12 +17,13 @@ import Data.Foldable (for_)
 import Data.ByteString (ByteString)
 import Group (ElementModQ, ElementModP, zeroModQ)
 import ElGamal (ElGamalCiphertext (ElGamalCiphertext), add)
-import ChaumPedersen (DisjunctiveChaumPedersenProof, ConstantChaumPedersenProof)
+import ChaumPedersen (DisjunctiveChaumPedersenProof, ConstantChaumPedersenProof, disjunctiveChaumPedersenProof)
 import ElectionObjectBase (HasElectionObjectBase (getObjectIdStr), HasOrderedObjectBase (getOrderedObjectBase), ElectionObjectBase (ElectionObjectBase, objectIdStr), OrderedObjectBase, sequenceOrderSort)
 import Election (CiphertextElectionContext (elgamalPublicKey))
 import Proof (IsProof(..), Proof (Proof), ProofUsage (Unknown))
 import Hash (CryptoHashCheckable (cryptoHashWith), hash)
 import Data.Maybe (fromMaybe)
+import Data.Functor ((<&>))
 
 listEq :: [ElectionObjectBase] -> [ElectionObjectBase] -> Bool
 listEq l1 l2 = sort l1 == sort l2
@@ -143,25 +145,51 @@ instance IsProof CiphertextBallotSelection where
 instance CryptoHashCheckable CiphertextBallotSelection where
   cryptoHashWith self encryptionSeed = hash (getObjectIdStr self, encryptionSeed, ciphertext self)
 
-{- TODO:
 
-def make_ciphertext_ballot_selection(
-    object_id: str,
-    sequence_order: int,
-    description_hash: ElementModQ,
-    ciphertext: ElGamalCiphertext,
-    elgamal_public_key: ElementModP,
-    crypto_extended_base_hash: ElementModQ,
-    proof_seed: ElementModQ,
-    selection_representation: int,
-    is_placeholder_selection: bool = False,
-    nonce: Optional[ElementModQ] = None,
-    crypto_hash: Optional[ElementModQ] = None,
-    proof: Optional[DisjunctiveChaumPedersenProof] = None,
-    extended_data: Optional[ElGamalCiphertext] = None,
-) -> CiphertextBallotSelection:
-
+{-|
+    Constructs a `CipherTextBallotSelection` object. Most of the parameters here match up to fields
+    in the class, but this helper function will optionally compute a Chaum-Pedersen proof if the
+    given nonce isn't `None`. Likewise, if a crypto_hash is not provided, it will be derived from
+    the other fields.
 -}
+makeCiphertextBallotSelection ::
+  ElectionObjectBase
+  -> OrderedObjectBase
+  -> ElementModQ
+  -> ElGamalCiphertext
+  -> ElementModP
+  -> ElementModQ
+  -> ElementModQ
+  -> Bool
+  -> Bool
+  -> Maybe ElementModQ
+  -> Maybe ElementModQ
+  -> Maybe DisjunctiveChaumPedersenProof
+  -> Maybe ElGamalCiphertext
+  -> CiphertextBallotSelection
+makeCiphertextBallotSelection
+  _objectId
+  _sequenceOrder
+  _descriptionHash
+  _ciphertext
+  elgamalPublicKey
+  cryptoExtendedBaseHash
+  proofSeed
+  selectionRepresentation
+  isPlaceholderSelection
+  nonce
+  cryptoHash0
+  proof0
+  extendedData =
+    let cryptoHash = fromMaybe (hash (_objectId, _descriptionHash, _ciphertext)) cryptoHash0
+        proof = maybe
+          (nonce <&> \n -> disjunctiveChaumPedersenProof _ciphertext n elgamalPublicKey cryptoExtendedBaseHash proofSeed selectionRepresentation)
+          pure
+          proof0
+
+    in CiphertextBallotSelection{..}
+
+
 
 data PlaintextBallotContest = PlaintextBallotContest
   { _objectId :: ElectionObjectBase
@@ -329,3 +357,40 @@ createBallotHash :: ByteString -> ElementModQ -> [CiphertextBallotContest] -> El
 createBallotHash ballotId _descriptionHash contests =
     let contestHashes = map (cryptoHash :: CiphertextBallotContest -> _) $ sequenceOrderSort contests
     in hash (ballotId, _descriptionHash, contestHashes)
+
+makeCiphertextSubmittedBallot ::
+    ElectionObjectBase
+    -> ByteString
+    -> ElementModQ
+    -> Maybe ElementModQ
+    -> [CiphertextBallotContest]
+    -> Maybe ElementModQ
+    -> Maybe Integer
+    -> BallotBoxState
+    -> IO (Either String SubmittedBallot)
+makeCiphertextSubmittedBallot
+    _objectId
+    styleId
+    manifestHash
+    codeSeed0
+    contests0
+    ballotCode0
+    timestamp0
+    state
+      | null contests0 = pure $ Left "ciphertext ballot with no contests"
+      | otherwise = do
+        let contestHashes = map (cryptoHash :: CiphertextBallotContest -> _) $ sequenceOrderSort contests0
+            contestHash = hash (_objectId, manifestHash, contestHashes)
+        timestamp <- case timestamp0 of Nothing -> error "getTime"; Just a -> pure a
+        let codeSeed = fromMaybe manifestHash codeSeed0
+            code =  fromMaybe (hash (codeSeed, timestamp, contestHash)) ballotCode0
+            contests = contests0 <&> (\CiphertextBallotContest{..} ->
+                CiphertextBallotContest{
+                  nonce = Nothing
+                  , ballotSelections = ballotSelections <&> (\CiphertextBallotSelection{..} -> CiphertextBallotSelection{nonce = Nothing, ..})
+                  , ..}
+                )
+
+        pure $ Right $ SubmittedBallot
+          (CiphertextBallot{cryptoHash = contestHash, nonce = Nothing, ..})
+          state
