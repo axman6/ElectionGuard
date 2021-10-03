@@ -20,15 +20,15 @@ import Nonce (initNonces, nonceAt)
 import Data.Maybe ()
 
 data DisjunctiveChaumPedersenProof = DisjunctiveChaumPedersenProof
-  { proofZeroPad       :: ElementModP
-  , proofZeroData      :: ElementModP
-  , proofOnePad        :: ElementModP
-  , proofOneData       :: ElementModP
-  , proofZeroChallenge :: ElementModQ
-  , proofOneChallenge  :: ElementModQ
-  , challenge          :: ElementModQ
-  , proofZeroResponse  :: ElementModQ
-  , proofOneResponse   :: ElementModQ
+  { proofZeroPad       :: !ElementModP
+  , proofZeroData      :: !ElementModP
+  , proofOnePad        :: !ElementModP
+  , proofOneData       :: !ElementModP
+  , proofZeroChallenge :: !ElementModQ
+  , proofOneChallenge  :: !ElementModQ
+  , challenge          :: !ElementModQ
+  , proofZeroResponse  :: !ElementModQ
+  , proofOneResponse   :: !ElementModQ
   } deriving stock (Show)
 
 {- |
@@ -342,6 +342,7 @@ disjunctiveChaumPedersenZero message r k qBar seed =
     c          = hash (qBar, alpha, beta, a0, b0, a1, b1)
     c0         = c - c1
     v0         = u0 + c0 * r
+    v1         = v + c1 * r
 
   in DisjunctiveChaumPedersenProof
     { proofZeroPad = a0
@@ -352,7 +353,7 @@ disjunctiveChaumPedersenZero message r k qBar seed =
     , proofOneChallenge = c1
     , challenge = c
     , proofZeroResponse = v0
-    , proofOneResponse = v
+    , proofOneResponse = v1
     }
 
 -- | Produces a "disjunctive" proof that an encryption of one is either an encrypted zero or one.
