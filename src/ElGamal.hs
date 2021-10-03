@@ -22,12 +22,12 @@ data ElGamalKeyPair = ElGamalKeyPair
   } deriving stock (Show)
 
 data ElGamalCiphertext = ElGamalCiphertext
-  { pubKey :: {-#UNPACK#-}!ElementModP
-  , ciphertext :: {-#UNPACK#-}!ElementModP
+  { pad :: {-#UNPACK#-}!ElementModP
+  , data' :: {-#UNPACK#-}!ElementModP
   } deriving stock (Show, Eq)
 
 instance Hashed ElGamalCiphertext where
-  hashTree ElGamalCiphertext{..} = hashTree (pubKey,ciphertext)
+  hashTree ElGamalCiphertext{..} = hashTree (pad,data')
 
 keypairFromSecret :: ElementModQ -> Maybe ElGamalKeyPair
 keypairFromSecret a@(ElementMod n)
@@ -37,10 +37,10 @@ keypairFromSecret a@(ElementMod n)
 encrypt :: Integer -> ElementModQ -> ElementModP -> Maybe ElGamalCiphertext
 encrypt m nonce pubK =
   let
-    pubKey = gPowP nonce
+    pad = gPowP nonce
     gpowp_m = gPowP (elementMod m :: ElementModP)
     pubkey_pow_n = powMod pubK nonce :: ElementModP
-    ciphertext = mult gpowp_m pubkey_pow_n
+    data' = mult gpowp_m pubkey_pow_n
 
   in if nonce == zeroModQ
     then Nothing
@@ -48,20 +48,20 @@ encrypt m nonce pubK =
 
 add :: ElGamalCiphertext -> ElGamalCiphertext -> ElGamalCiphertext
 add a b = ElGamalCiphertext
-  (mult (pubKey a) (pubKey b))
-  (mult (ciphertext a) (ciphertext b))
+  (mult (pad a) (pad b))
+  (mult (data' a) (data' b))
 
 neg :: ElGamalCiphertext -> ElGamalCiphertext
-neg ElGamalCiphertext{..} = ElGamalCiphertext (multInv pubKey) (multInv ciphertext)
+neg ElGamalCiphertext{..} = ElGamalCiphertext (multInv pad) (multInv data')
 
 sub :: ElGamalCiphertext -> ElGamalCiphertext -> ElGamalCiphertext
 sub a b = add a (neg b)
 
 decrypt :: ElGamalSecretKey -> ElGamalCiphertext -> Int
-decrypt sec enc = decryptKnownProduct enc (powMod (pubKey enc) sec)
+decrypt sec enc = decryptKnownProduct enc (powMod (pad enc) sec)
 
 decryptKnownProduct :: ElGamalCiphertext -> ElementModP -> Int
-decryptKnownProduct enc prod = dlog (mult (ciphertext enc) (multInv prod :: ElementModP))
+decryptKnownProduct enc prod = dlog (mult (data' enc) (multInv prod :: ElementModP))
 
 partialDecrypt :: ElGamalSecretKey -> ElGamalCiphertext -> ElementModP
-partialDecrypt sec enc = powMod (pubKey enc) sec
+partialDecrypt sec enc = powMod (pad enc) sec

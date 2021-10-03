@@ -6,7 +6,8 @@
 module ChaumPedersen (module ChaumPedersen) where
 
 import Proof ( IsProof(..), Proof (..), ProofUsage (SecretValue, SelectionValue, SelectionLimit) )
-import ElGamal ( ElGamalCiphertext(pubKey, ciphertext) )
+import ElGamal ( ElGamalCiphertext )
+import qualified ElGamal
 import Group
     ( ElementModP,
       ElementModQ,
@@ -46,7 +47,7 @@ instance IsProof DisjunctiveChaumPedersenProof where
   isValid :: DisjunctiveChaumPedersenProof -> ElGamalCiphertext -> ElementModP -> ElementModQ -> Either String ()
   isValid self@DisjunctiveChaumPedersenProof{..} message k qBar =
     let
-      (alpha, beta) = (pubKey message, ciphertext message)
+      (alpha, beta) = (ElGamal.pad message, ElGamal.data' message)
       a0 = proofZeroPad
       b0 = proofZeroData
       a1 = proofOnePad
@@ -147,7 +148,7 @@ instance IsProof ChaumPedersenProof where
   isValid :: ChaumPedersenProof -> ElGamalCiphertext  -> ElementModP -> ElementModP -> ElementModQ -> Either String ()
   isValid self@ChaumPedersenProof{..} message k m qBar =
     let
-      (alpha, beta) = (pubKey message, ciphertext message)
+      (alpha, beta) = (ElGamal.pad message, ElGamal.data' message)
       a = pad
       b = data_
       c = challenge
@@ -244,7 +245,7 @@ instance IsProof ConstantChaumPedersenProof where
   isValid :: ConstantChaumPedersenProof -> ElGamalCiphertext -> ElementModP  -> ElementModQ -> Either String ()
   isValid self@ ConstantChaumPedersenProof{..} message k qBar =
     let
-      (alpha, beta) = (pubKey message, ciphertext message)
+      (alpha, beta) = (ElGamal.pad message, ElGamal.data' message)
       a = pad
       b = data_
       c = challenge
@@ -330,7 +331,7 @@ disjunctiveChaumPedersenZero ::
   -> DisjunctiveChaumPedersenProof
 disjunctiveChaumPedersenZero message r k qBar seed =
   let
-    (alpha, beta) = (pubKey message, ciphertext message)
+    (alpha, beta) = (ElGamal.pad message, ElGamal.data' message)
     nonces = initNonces seed [Left $ bs"disjoint-chaum-pedersen-proof"]
     [c1, v, u0] = map (nonceAt nonces) [0,1,2]
 
@@ -364,7 +365,7 @@ disjunctiveChaumPedersenOne ::
   -> DisjunctiveChaumPedersenProof
 disjunctiveChaumPedersenOne message r k qBar seed =
   let
-    (alpha, beta) = (pubKey message, ciphertext message)
+    (alpha, beta) = (ElGamal.pad message, ElGamal.data' message)
     nonces = initNonces seed [Left $ bs"disjoint-chaum-pedersen-proof"]
     [w, v, u1] = map (nonceAt nonces) [0,1,2]
 
@@ -399,7 +400,7 @@ chaumPedersen ::
   -> ChaumPedersenProof
 chaumPedersen message s m seed hashHeader =
   let
-    (alpha, beta) = (pubKey message, ciphertext message)
+    (alpha, beta) = (ElGamal.pad message, ElGamal.data' message)
     -- Pick one random number in Q.
     u = nonceAt (initNonces seed [Left $ bs"constant-chaum-pedersen-proof"]) 0
     a = gPowP  u                                -- 𝑔^𝑢𝑖 mod 𝑝
@@ -424,7 +425,7 @@ constantChaumPedersen ::
   -> ConstantChaumPedersenProof
 constantChaumPedersen message constant r k seed hashHeader =
   let
-    (alpha, beta) = (pubKey message, ciphertext message)
+    (alpha, beta) = (ElGamal.pad message, ElGamal.data' message)
     -- Pick one random number in Q.
     u = nonceAt (initNonces seed [Left $ bs"constant-chaum-pedersen-proof"]) 0
     a = gPowP u                               -- 𝑔^𝑢𝑖 mod 𝑝
