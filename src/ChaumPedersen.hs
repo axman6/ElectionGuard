@@ -341,8 +341,8 @@ disjunctiveChaumPedersenZero message r k qBar seed =
     !b1         = mult (k ^% v :: ElementModP) (gPowP c1)
     !c          = hash (qBar, alpha, beta, a0, b0, a1, b1)
     !c0         = c - c1
-    !v0         = u0 + c0 * r
-    !v1         = v + c1 * r
+    !v0         = addTimes u0 c0 r
+    !v1         = addTimes v  c1 r
 
   in DisjunctiveChaumPedersenProof
     { proofZeroPad = a0
@@ -366,19 +366,19 @@ disjunctiveChaumPedersenOne ::
   -> DisjunctiveChaumPedersenProof
 disjunctiveChaumPedersenOne message r k qBar seed =
   let
-    (alpha, beta) = (ElGamal.pad message, ElGamal.data' message)
+    (!alpha, !beta) = (ElGamal.pad message, ElGamal.data' message)
     nonces = initNonces seed [Left $ bs"disjoint-chaum-pedersen-proof"]
-    [w, v, u1] = map (nonceAt nonces) [0,1,2]
+    [!w, !v, !u1] = map (nonceAt nonces) [0,1,2]
 
-    a0       = gPowP v
-    b0       = (k ^% v :: ElementModP) `mult` gPowP w
-    a1       = gPowP u1
-    b1       = k ^% u1
-    c        = hash (qBar, alpha, beta, a0, b0, a1, b1)
-    c0       = negateN  w
-    c1       = c + w
-    v0       = addTimes v c0 r           -- v + c0 * r
-    v1       = addTimes u1 c1 r           -- u1 + c1 * r
+    !a0       = gPowP v
+    !b0       = (k ^% v :: ElementModP) `mult` gPowP w
+    !a1       = gPowP u1
+    !b1       = k ^% u1
+    !c        = hash (qBar, alpha, beta, a0, b0, a1, b1)
+    !c0       = negateN  w
+    !c1       = c + w
+    !v0       = addTimes v c0 r           -- v + c0 * r
+    !v1       = addTimes u1 c1 r           -- u1 + c1 * r
 
   in DisjunctiveChaumPedersenProof
     { proofZeroPad = a0
