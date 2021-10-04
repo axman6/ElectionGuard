@@ -105,7 +105,7 @@ type ElementModP = ElementMod 'P
 
 {-# INLINE elementMod #-}
 elementMod :: forall a. Parameter a => Integer -> ElementMod a
-elementMod n = ElementMod (n `mod` param' @a Proxy)
+elementMod !n = ElementMod (n `mod` param' @a Proxy)
 
 zeroModP :: ElementModP
 zeroModP = elementMod 0
@@ -143,28 +143,37 @@ instance AsInteger ElementModPOrQ where
 
 
 powMod :: forall a b p. (AsInteger a, AsInteger b, Parameter p) => a -> b -> ElementMod p
-powMod a b = ElementMod (expSafe (asInteger a) (asInteger b) (param' @p Proxy))
+powMod a b = ElementMod (expFast (asInteger a) (asInteger b) (param' @p Proxy)) -- TODO: Does this need to be expSafe? does timing matter?
 
 infixr 8 ^%
 (^%) :: forall a b p. (AsInteger a, AsInteger b, Parameter p) => a -> b -> ElementMod p
 (^%) = powMod
+{-# INLINE (^%) #-}
 
 gPowP :: (OneOf t '[ElementModP, ElementModQ], AsInteger t) => t -> ElementModP
 gPowP = powMod (ElementMod @'P g)
+{-# INLINE gPowP #-}
 
-{-# INLINE mult #-}
 mult :: forall p a b. (Parameter p, AsInteger a, AsInteger b) => a -> b -> ElementMod p
 mult a b = ElementMod ((asInteger a * asInteger b) `mod` param' @p Proxy)
+{-# INLINE mult #-}
 
 multInv :: forall p a. (AsInteger a, Parameter p) => a -> ElementMod p
 multInv e = ElementMod $ inverseCoprimes (asInteger e) (param' @p Proxy)
+{-# INLINE multInv #-}
 
 divP :: forall p. Parameter p => ElementMod p -> ElementMod p -> ElementMod p
 divP a b = a `mult` multInv @p b
+{-# INLINE divP #-}
+
+addTimes :: forall p. Parameter p => ElementMod p -> ElementMod p -> ElementMod p -> ElementMod p
+addTimes (ElementMod a) (ElementMod b) (ElementMod c) = elementMod (a + b*c)
+{-# INLINE addTimes #-}
 
 -- | Computes \( (P - n) \mod{P} \) for prime parameter \( P \)
 negateN :: forall p. Parameter p => ElementMod p -> ElementMod p
-negateN (ElementMod n) = ElementMod (param' @p Proxy - n)
+negateN (ElementMod n) = ElementMod $! (param' @p Proxy - n)
+{-# INLINE negateN #-}
 
 
 isValidResidue :: ElementMod 'P -> Bool

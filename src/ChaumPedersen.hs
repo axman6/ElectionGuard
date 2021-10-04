@@ -14,7 +14,7 @@ import Group
       (^%),
       gPowP,
       isValidResidue,
-      inBounds, ParamName (Q), zeroModQ, ElementMod (ElementMod), negateN, mult )
+      inBounds, ParamName (Q), zeroModQ, ElementMod (ElementMod), negateN, mult, addTimes )
 import Hash ( hash, bs )
 import Nonce (initNonces, nonceAt)
 import Data.Maybe ()
@@ -48,34 +48,34 @@ instance IsProof DisjunctiveChaumPedersenProof where
   isValid self@DisjunctiveChaumPedersenProof{..} message k qBar =
     let
       (alpha, beta) = (ElGamal.pad message, ElGamal.data' message)
-      a0 = proofZeroPad
-      b0 = proofZeroData
-      a1 = proofOnePad
-      b1 = proofOneData
-      c0 = proofZeroChallenge
-      c1 = proofOneChallenge
-      c  = challenge
-      v0 = proofZeroResponse
-      v1 = proofOneResponse
+      !a0 = proofZeroPad
+      !b0 = proofZeroData
+      !a1 = proofOnePad
+      !b1 = proofOneData
+      !c0 = proofZeroChallenge
+      !c1 = proofOneChallenge
+      !c  = challenge
+      !v0 = proofZeroResponse
+      !v1 = proofOneResponse
 
-      inBoundsAlpha = isValidResidue alpha
-      inBoundsBeta  = isValidResidue beta
-      inBoundsA0    = isValidResidue a0
-      inBoundsB0    = isValidResidue b0
-      inBoundsA1    = isValidResidue a1
-      inBoundsB1    = isValidResidue b1
-      inBoundsC0    = inBounds c0
-      inBoundsC1    = inBounds c1
-      inBoundsV0    = inBounds v0
-      inBoundsV1    = inBounds v1
+      !inBoundsAlpha = isValidResidue alpha
+      !inBoundsBeta  = isValidResidue beta
+      !inBoundsA0    = isValidResidue a0
+      !inBoundsB0    = isValidResidue b0
+      !inBoundsA1    = isValidResidue a1
+      !inBoundsB1    = isValidResidue b1
+      !inBoundsC0    = inBounds c0
+      !inBoundsC1    = inBounds c1
+      !inBoundsV0    = inBounds v0
+      !inBoundsV1    = inBounds v1
 
-      consistentC   = c0 + c1 == c && c == hash (qBar, alpha, beta, a0, b0, a1, b1)
-      consistentGv0 = gPowP v0              == a0 * alpha ^% c0
-      consistentGv1 = gPowP v1              == a1 * alpha ^% c1
-      consistentKv0 = k ^% v0                        == b0 * beta ^% c0
-      consistentGc1kv1 = gPowP c1 * k ^% v1 == b1 * beta ^% c1
+      !consistentC   = c0 + c1 == c && c == hash (qBar, alpha, beta, a0, b0, a1, b1)
+      !consistentGv0 = gPowP v0              == a0 * alpha ^% c0
+      !consistentGv1 = gPowP v1              == a1 * alpha ^% c1
+      !consistentKv0 = (k ^% v0 :: ElementModP) == mult b0 (beta ^% c0 :: ElementModP)
+      !consistentGc1kv1 = gPowP c1 * k ^% v1 == b1 * beta ^% c1
 
-      success = and
+      !success = and
         [ inBoundsAlpha
         , inBoundsBeta
         , inBoundsA0
@@ -119,10 +119,10 @@ instance IsProof DisjunctiveChaumPedersenProof where
               ]
 
 data ChaumPedersenProof = ChaumPedersenProof
-  { pad :: ElementModP
-  , data_ :: ElementModP
-  , challenge :: ElementModQ
-  , response :: ElementModQ
+  { pad       :: !ElementModP
+  , data_     :: !ElementModP
+  , challenge :: !ElementModQ
+  , response  :: !ElementModQ
   } deriving stock (Show)
 
 {- |
@@ -219,11 +219,11 @@ instance IsProof ChaumPedersenProof where
 
 
 data ConstantChaumPedersenProof = ConstantChaumPedersenProof
-  { pad :: ElementModP
-  , data_ :: ElementModP
-  , challenge :: ElementModQ
-  , response :: ElementModQ
-  , constant :: Integer
+  { pad       :: !ElementModP
+  , data_     :: !ElementModP
+  , challenge :: !ElementModQ
+  , response  :: !ElementModQ
+  , constant  :: !Integer
   } deriving stock (Show)
 
 {-| Validates a "constant" Chaum-Pedersen proof.
@@ -331,18 +331,18 @@ disjunctiveChaumPedersenZero ::
   -> DisjunctiveChaumPedersenProof
 disjunctiveChaumPedersenZero message r k qBar seed =
   let
-    (alpha, beta) = (ElGamal.pad message, ElGamal.data' message)
+    (!alpha, !beta) = (ElGamal.pad message, ElGamal.data' message)
     nonces = initNonces seed [Left $ bs"disjoint-chaum-pedersen-proof"]
-    [c1, v, u0] = map (nonceAt nonces) [0,1,2]
+    [!c1, !v, !u0] = map (nonceAt nonces) [0,1,2]
 
-    a0         = gPowP u0
-    b0         = k ^% u0
-    a1         = gPowP v
-    b1         = mult (k ^% v :: ElementModP) (gPowP c1)
-    c          = hash (qBar, alpha, beta, a0, b0, a1, b1)
-    c0         = c - c1
-    v0         = u0 + c0 * r
-    v1         = v + c1 * r
+    !a0         = gPowP u0
+    !b0         = k ^% u0
+    !a1         = gPowP v
+    !b1         = mult (k ^% v :: ElementModP) (gPowP c1)
+    !c          = hash (qBar, alpha, beta, a0, b0, a1, b1)
+    !c0         = c - c1
+    !v0         = u0 + c0 * r
+    !v1         = v + c1 * r
 
   in DisjunctiveChaumPedersenProof
     { proofZeroPad = a0
@@ -377,8 +377,8 @@ disjunctiveChaumPedersenOne message r k qBar seed =
     c        = hash (qBar, alpha, beta, a0, b0, a1, b1)
     c0       = negateN  w
     c1       = c + w
-    v0       = v + c0 * r
-    v1       = u1 + c1 * r
+    v0       = addTimes v c0 r           -- v + c0 * r
+    v1       = addTimes u1 c1 r           -- u1 + c1 * r
 
   in DisjunctiveChaumPedersenProof
     { proofZeroPad = a0
